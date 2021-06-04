@@ -423,6 +423,60 @@ namespace TheOtherRoles {
             if (Arsonist.currentTarget != null) setPlayerOutline(Arsonist.currentTarget, Arsonist.color);
         }
 
+        static void snitchUpdate()
+        {
+            if (Snitch.localArrows == null) return;
+
+            foreach (Arrow arrow in Snitch.localArrows) arrow.arrow.SetActive(false);
+
+            if (Snitch.snitch == null || Snitch.snitch.Data.IsDead) return;
+
+            var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
+            int numberOfTasks = playerTotal - playerCompleted;
+
+            if (PlayerControl.LocalPlayer.Data.IsImpostor && numberOfTasks <= Snitch.taskCountForImpostors)
+            {
+                if (Snitch.localArrows.Count == 0) Snitch.localArrows.Add(new Arrow(Color.blue));
+                if (Snitch.localArrows.Count != 0 && Snitch.localArrows[0] != null)
+                {
+                    Snitch.localArrows[0].arrow.SetActive(true);
+                    Snitch.localArrows[0].Update(Snitch.snitch.transform.position);
+                }
+            }
+            else if (PlayerControl.LocalPlayer == Snitch.snitch && numberOfTasks == 0)
+            {
+                int arrowIndex = 0;
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                {
+                    if (p.Data.IsImpostor && !p.Data.IsDead)
+                    {
+                        if (arrowIndex >= Snitch.localArrows.Count) Snitch.localArrows.Add(new Arrow(Color.blue));
+                        if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null)
+                        {
+                            Snitch.localArrows[arrowIndex].arrow.SetActive(true);
+                            Snitch.localArrows[arrowIndex].Update(p.transform.position);
+                        }
+                        arrowIndex++;
+                    }
+                }
+            }
+        }
+
+        static void bountyHunterUpdate()
+        {
+            if (BountyHunter.bountyHunter == null || BountyHunter.bountyHunter.Data.IsDead || PlayerControl.LocalPlayer != BountyHunter.bountyHunter || BountyHunter.arrow == null) return;
+
+            BountyHunter.timeUntilUpdate -= Time.fixedDeltaTime;
+            if (BountyHunter.timeUntilUpdate <= 0f)
+            {
+                BountyHunter.getRandomTarget();
+                BountyHunter.arrow.arrow.SetActive(true);
+                BountyHunter.arrow.Update(BountyHunter.target.transform.position);
+                BountyHunter.timeUntilUpdate = BountyHunter.updateIntervall;
+            }
+            BountyHunter.arrow.Update();
+        }
+
         public static void Postfix(PlayerControl __instance) {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
 
@@ -476,6 +530,10 @@ namespace TheOtherRoles {
                 securityGuardSetTarget();
                 // Arsonist
                 arsonistSetTarget();
+                // Snitch
+                snitchUpdate();
+                // BountyHunter
+                bountyHunterUpdate();
             } 
         }
     }
@@ -513,7 +571,7 @@ namespace TheOtherRoles {
     class RpcMurderPlayer {
         public static bool Prefix([HarmonyArgument(0)]PlayerControl target) {
             if (Helpers.handleMurderAttempt(target)) { // Custom checks
-                if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini) { // Not checked by official servers
+                if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini || BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter) { // Not checked by official servers
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(target.PlayerId);
@@ -649,6 +707,17 @@ namespace TheOtherRoles {
                 var multiplier = Mini.isGrownUp() ? 0.66f : 2f;
                 Mini.mini.SetKillTimer(PlayerControl.GameOptions.KillCooldown * multiplier);
             }
+
+            // Set bountyHunter cooldown
+            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter)
+            {
+                if (target == BountyHunter.target)
+                {
+                    BountyHunter.bountyHunter.SetKillTimer(0);
+                    BountyHunter.getRandomTarget();
+                }
+                else BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
+            }
         }
     }
 
@@ -657,10 +726,12 @@ namespace TheOtherRoles {
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)]float time) {
             if (PlayerControl.GameOptions.KillCooldown <= 0f) return false;
             float multiplier = 1f;
+            float addition = 0f;
             if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini && Mini.mini.Data.IsImpostor) multiplier = Mini.isGrownUp() ? 0.66f : 2f;
+            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter) addition = BountyHunter.punishmentTime;
 
-            __instance.killTimer = Mathf.Clamp(time, 0f, PlayerControl.GameOptions.KillCooldown * multiplier);
-            DestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, PlayerControl.GameOptions.KillCooldown * multiplier);
+            __instance.killTimer = Mathf.Clamp(time, 0f, PlayerControl.GameOptions.KillCooldown * multiplier + addition);
+            DestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, PlayerControl.GameOptions.KillCooldown * multiplier + addition);
             return false;
         }
     }

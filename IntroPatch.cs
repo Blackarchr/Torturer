@@ -8,28 +8,40 @@ using System.Linq;
 namespace TheOtherRoles
 {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
-    class IntroCutsceneOnDestroyPatch {
-        public static void Prefix(IntroCutscene __instance) {
-            // Arsonist generate player icons
-            if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer == Arsonist.arsonist && HudManager.Instance != null) {
+    class IntroCutsceneOnDestroyPatch
+    {
+        public static void Prefix(IntroCutscene __instance)
+        {
+            if (PlayerControl.LocalPlayer != null && HudManager.Instance != null)
+            {
                 int playerCounter = 0;
-                Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
-                bottomLeft += new Vector3(-0.25f, -0.25f, 0);
-                foreach (PlayerControl player in PlayerControl.AllPlayerControls) {
-                    if (player != PlayerControl.LocalPlayer) {
-                        GameData.PlayerInfo data = player.Data;
-                        PoolablePlayer poolablePlayer = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, HudManager.Instance.transform);
-                        poolablePlayer.transform.localPosition = bottomLeft + Vector3.right * playerCounter * 0.35f;
-                        poolablePlayer.transform.localScale = Vector3.one * 0.3f;
-                        PlayerControl.SetPlayerMaterialColors(data.ColorId, poolablePlayer.Body);
-                        DestroyableSingleton<HatManager>.Instance.SetSkin(poolablePlayer.SkinSlot, data.SkinId);
-                        poolablePlayer.HatSlot.SetHat(data.HatId, data.ColorId);
-                        PlayerControl.SetPetImage(data.PetId, data.ColorId, poolablePlayer.PetSlot);
-                        poolablePlayer.NameText.text = data.PlayerName;
-                        poolablePlayer.SetFlipX(true);
-                        poolablePlayer.setSemiTransparent(true);
-                        Arsonist.dousedIcons[player.PlayerId] = poolablePlayer;
-                        playerCounter++;
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                {
+                    GameData.PlayerInfo data = p.Data;
+                    PoolablePlayer player = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, HudManager.Instance.transform);
+                    PlayerControl.SetPlayerMaterialColors(data.ColorId, player.Body);
+                    DestroyableSingleton<HatManager>.Instance.SetSkin(player.SkinSlot, data.SkinId);
+                    player.HatSlot.SetHat(data.HatId, data.ColorId);
+                    PlayerControl.SetPetImage(data.PetId, data.ColorId, player.PetSlot);
+                    player.NameText.text = data.PlayerName;
+                    player.SetFlipX(true);
+                    player.setSemiTransparent(false);
+                    player.gameObject.SetActive(false);
+                    MapOptions.poolablePlayer[p.PlayerId] = player;
+
+                    // Arsonist 
+                    if (PlayerControl.LocalPlayer == Arsonist.arsonist) {
+                        Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
+                        bottomLeft += new Vector3(-0.25f, -0.25f, 0);
+
+                        if (p != Arsonist.arsonist) {
+                            player.transform.localPosition = bottomLeft + Vector3.right * playerCounter * 0.35f;
+                            player.transform.localScale = Vector3.one * 0.3f;
+                            player.setSemiTransparent(true);
+                            Arsonist.dousedIcons[p.PlayerId] = player;
+                            Arsonist.dousedIcons[p.PlayerId].gameObject.SetActive(true);
+                            playerCounter++;
+                        }
                     }
                 }
             }
@@ -104,3 +116,4 @@ namespace TheOtherRoles
         }
     }
 }
+

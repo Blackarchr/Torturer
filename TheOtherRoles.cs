@@ -51,6 +51,7 @@ namespace TheOtherRoles
             SecurityGuard.clearAndReload();
             Arsonist.clearAndReload();
             Guesser.clearAndReload();
+            BountyHunter.clearAndReload();
         }
 
         public static class Jester {
@@ -943,6 +944,61 @@ namespace TheOtherRoles
             guesser = null;
             
             remainingShots = Mathf.RoundToInt(CustomOptionHolder.guesserNumberOfShots.getFloat());
+        }
+    }
+
+    public static class BountyHunter
+    {
+        public static PlayerControl bountyHunter;
+        public static PlayerControl currentTarget;
+        public static PlayerControl target;
+        public static PoolablePlayer showTarget;
+        public static Color color = Palette.ImpostorRed;
+
+        public static Arrow arrow = new Arrow(color);
+        public static float updateIntervall = 30f;
+        public static float timeUntilUpdate = 0f;
+        public static float punishmentTime = 30f;
+        public static List <PlayerControl> accessibletargets;
+
+        public static void getRandomTarget()
+        {
+            Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
+            bottomLeft += new Vector3(0, 0, 0);
+
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            {
+                if (!p.Data.IsDead && p != p.Data.IsImpostor && p != Spy.spy)
+                    accessibletargets.Add(p);
+                else if (p.Data.IsDead || p.Data.IsImpostor)
+                {
+                    accessibletargets.Remove(p);
+                    if (showTarget == MapOptions.poolablePlayer[p.PlayerId]) showTarget.gameObject.SetActive(false);
+
+                }
+            }
+
+            target = accessibletargets[TheOtherRoles.rnd.Next(0, accessibletargets.Count)];
+            if (showTarget != null) showTarget.gameObject.SetActive(false);
+            if (MapOptions.poolablePlayer.ContainsKey(target.PlayerId))
+            {
+                showTarget = MapOptions.poolablePlayer[target.PlayerId];
+                showTarget.transform.localPosition = bottomLeft + Vector3.right * 0.2f;
+                showTarget.transform.localScale = Vector3.one * 0.9f;
+                showTarget.gameObject.SetActive(true);
+            };
+        }
+        public static void clearAndReload()
+        {
+            arrow = new Arrow(color);
+            bountyHunter = null;
+            currentTarget = null;
+            target = null;
+            showTarget = null;
+            updateIntervall = CustomOptionHolder.bountyHunterUpdateIntervall.getFloat();
+            punishmentTime = CustomOptionHolder.bountyHunterPunishmentTime.getFloat();
+            accessibletargets = new List<PlayerControl>();
+            timeUntilUpdate = 0f;
         }
     }
 }
