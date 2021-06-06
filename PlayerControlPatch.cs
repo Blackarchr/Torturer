@@ -462,19 +462,48 @@ namespace TheOtherRoles {
             }
         }
 
-        static void bountyHunterUpdate()
-        {
-            if (BountyHunter.bountyHunter == null || BountyHunter.bountyHunter.Data.IsDead || PlayerControl.LocalPlayer != BountyHunter.bountyHunter || BountyHunter.arrow == null) return;
+        static void bountyHunterUpdate() {
+            if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
 
-            BountyHunter.timeUntilUpdate -= Time.fixedDeltaTime;
-            if (BountyHunter.timeUntilUpdate <= 0f)
-            {
-                BountyHunter.getRandomTarget();
-                BountyHunter.arrow.arrow.SetActive(true);
-                BountyHunter.arrow.Update(BountyHunter.target.transform.position);
-                BountyHunter.timeUntilUpdate = BountyHunter.updateIntervall;
+            if (BountyHunter.bountyHunter.Data.IsDead) {
+                if (BountyHunter.arrow != null || BountyHunter.arrow.arrow != null) UnityEngine.Object.Destroy(BountyHunter.arrow.arrow);
+                BountyHunter.arrow = null;
+                BountyHunter.bounty = null;
+                // TODO: deadctivate overlays of players and cd if we have one
+                return;
             }
-            BountyHunter.arrow.Update();
+
+            BountyHunter.arrowUpdateTimer -= Time.fixedDeltaTime;
+            BountyHunter.bountyUpdateTimer -= Time.fixedDeltaTime;
+
+            if (BountyHunter.bounty == null || BountyHunter.bountyUpdateTimer <= 0f) {
+                // Set new bounty
+                BountyHunter.bounty = null;
+                BountyHunter.arrowUpdateTimer = 0f; // Force arrow to update
+                var possibleTargets = new List<PlayerControl>();
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
+                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.IsImpostor && p != Spy.spy) possibleTargets.Add(p);
+                }
+                BountyHunter.bounty = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
+                if (BountyHunter.bounty == null) return;
+
+                // Show poolable player
+                if (HudManager.Instance != null && HudManager.Instance.UseButton != null) {
+                    foreach (PoolablePlayer pp in MapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    if (MapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
+                        MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(true);
+                }
+            }
+
+            // Update Arrow
+            if (BountyHunter.showArrow && BountyHunter.bounty != null) {
+                if (BountyHunter.arrow == null) BountyHunter.arrow = new Arrow(Color.red);
+                if (BountyHunter.arrowUpdateTimer <= 0f) {
+                    BountyHunter.arrow.Update(BountyHunter.bounty.transform.position);
+                    BountyHunter.arrowUpdateTimer = BountyHunter.arrowUpdateIntervall;
+                }
+                BountyHunter.arrow.Update();
+            }
         }
 
         public static void Postfix(PlayerControl __instance) {
@@ -709,14 +738,13 @@ namespace TheOtherRoles {
             }
 
             // Set bountyHunter cooldown
-            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter)
-            {
-                if (target == BountyHunter.target)
-                {
-                    BountyHunter.bountyHunter.SetKillTimer(0);
-                    BountyHunter.getRandomTarget();
+            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter) {
+                if (target == BountyHunter.bounty) {
+                    BountyHunter.bountyHunter.SetKillTimer(BountyHunter.bountyKillCooldown);
+                    BountyHunter.bountyUpdateTimer = 0f; // Force bounty update
                 }
-                else BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
+                else
+                    BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
             }
         }
     }
