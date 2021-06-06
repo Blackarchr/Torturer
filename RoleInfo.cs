@@ -37,7 +37,7 @@ namespace TheOtherRoles
         public static RoleInfo trickster = new RoleInfo("Trickster", Trickster.color, "Use your jack-in-the-boxes to surprise others", "Surprise your enemies", RoleId.Trickster);
         public static RoleInfo cleaner = new RoleInfo("Cleaner", Cleaner.color, "Kill everyone and leave no traces", "Clean up dead bodies", RoleId.Cleaner);
         public static RoleInfo warlock = new RoleInfo("Warlock", Warlock.color, "Curse other players and kill everyone", "Curse and kill everyone", RoleId.Warlock);
-        public static RoleInfo bountyHunter = new RoleInfo("Bounty Hunter", BountyHunter.color, "Massacre your targets to win", "Kill your target", RoleId.BountyHunter);
+        public static RoleInfo bountyHunter = new RoleInfo("Bounty Hunter", BountyHunter.color, "Hunt your Bounty down", "Hunt your Bounty down", RoleId.BountyHunter);
         public static RoleInfo detective = new RoleInfo("Detective", Detective.color, "Find the <color=#FF1919FF>Impostors</color> by examining footprints", "Examine footprints", RoleId.Detective);
         public static RoleInfo timeMaster = new RoleInfo("Time Master", TimeMaster.color, "Save yourself with your time shield", "Use your time shield", RoleId.TimeMaster);
         public static RoleInfo medic = new RoleInfo("Medic", Medic.color, "Protect someone with your shield", "Protect other players", RoleId.Medic);
@@ -72,6 +72,7 @@ namespace TheOtherRoles
             trickster,
             cleaner,
             warlock,
+            bountyHunter,
             niceMini,
             evilMini,
             goodGuesser,
