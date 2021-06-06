@@ -126,6 +126,9 @@ namespace TheOtherRoles {
                     }
                 }
             }
+
+            // set new Target for BountyHunter
+            if (BountyHunter.bountyHunter != null && BountyHunter.bountyHunter == PlayerControl.LocalPlayer) BountyHunter.getRandomTarget();
         }
     }
 

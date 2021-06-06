@@ -13,7 +13,7 @@ namespace TheOtherRoles
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
         private static CustomButton timeMasterShieldButton;
-        private static CustomButton medicShieldButton;
+        private static CustomButton medicShieldButton; 
         private static CustomButton shifterShiftButton;
         private static CustomButton morphlingButton;
         private static CustomButton camouflagerButton;

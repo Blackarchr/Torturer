@@ -74,6 +74,10 @@ namespace TheOtherRoles {
         public static CustomOption jackalCanCreateSidekickFromImpostor;
         public static CustomOption jackalAndSidekickHaveImpostorVision;
 
+        public static CustomOption bountyHunterSpawnRate;
+        public static CustomOption bountyHunterUpdateIntervall;
+        public static CustomOption bountyHunterPunishmentTime;
+
         public static CustomOption shifterSpawnRate;
 
         public static CustomOption mayorSpawnRate;
@@ -210,7 +214,11 @@ namespace TheOtherRoles {
             warlockSpawnRate = CustomOption.Create(270, cs(Cleaner.color, "Warlock"), rates, null, true);
             warlockCooldown = CustomOption.Create(271, "Warlock Cooldown", 30f, 10f, 60f, 2.5f, warlockSpawnRate);
             warlockRootTime = CustomOption.Create(272, "Warlock Root Time", 5f, 0f, 15f, 1f, warlockSpawnRate);
-            
+
+            bountyHunterSpawnRate = CustomOption.Create(330, cs(BountyHunter.color, "BountyHunter"), rates, null, true);
+            bountyHunterUpdateIntervall = CustomOption.Create(331, "BountyHunter Target Update Intervall", 30f, 2.5f, 60f, 2.5f, bountyHunterSpawnRate);
+            bountyHunterPunishmentTime = CustomOption.Create(332, "BountyHunter Non-Target Punishment", 30f, 2.5f, 60f, 2.5f, bountyHunterSpawnRate);
+
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
             miniGrowingUpDuration = CustomOption.Create(181, "Mini Growing Up Duration", 400f, 100f, 1500f, 100f, miniSpawnRate);
 
@@ -623,7 +631,7 @@ namespace TheOtherRoles {
 
             var hudString = sb.ToString();
 
-            int defaultSettingsLines = 19;
+            int defaultSettingsLines = 20;
             int roleSettingsLines = defaultSettingsLines + 33;
             int detailedSettingsP1 = roleSettingsLines + 34;
             int detailedSettingsP2 = detailedSettingsP1 + 35;
