@@ -638,8 +638,8 @@ namespace TheOtherRoles {
 
             var hudString = sb.ToString();
 
-            int defaultSettingsLines = 20;
-            int roleSettingsLines = defaultSettingsLines + 33;
+            int defaultSettingsLines = 19;
+            int roleSettingsLines = defaultSettingsLines + 34;
             int detailedSettingsP1 = roleSettingsLines + 34;
             int detailedSettingsP2 = detailedSettingsP1 + 35;
             int end1 = hudString.TakeWhile(c => (defaultSettingsLines -= (c == '\n' ? 1 : 0)) > 0).Count();
