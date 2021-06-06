@@ -423,89 +423,6 @@ namespace TheOtherRoles {
             if (Arsonist.currentTarget != null) setPlayerOutline(Arsonist.currentTarget, Arsonist.color);
         }
 
-        static void snitchUpdate()
-        {
-            if (Snitch.localArrows == null) return;
-
-            foreach (Arrow arrow in Snitch.localArrows) arrow.arrow.SetActive(false);
-
-            if (Snitch.snitch == null || Snitch.snitch.Data.IsDead) return;
-
-            var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
-            int numberOfTasks = playerTotal - playerCompleted;
-
-            if (PlayerControl.LocalPlayer.Data.IsImpostor && numberOfTasks <= Snitch.taskCountForImpostors)
-            {
-                if (Snitch.localArrows.Count == 0) Snitch.localArrows.Add(new Arrow(Color.blue));
-                if (Snitch.localArrows.Count != 0 && Snitch.localArrows[0] != null)
-                {
-                    Snitch.localArrows[0].arrow.SetActive(true);
-                    Snitch.localArrows[0].Update(Snitch.snitch.transform.position);
-                }
-            }
-            else if (PlayerControl.LocalPlayer == Snitch.snitch && numberOfTasks == 0)
-            {
-                int arrowIndex = 0;
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                {
-                    if (p.Data.IsImpostor && !p.Data.IsDead)
-                    {
-                        if (arrowIndex >= Snitch.localArrows.Count) Snitch.localArrows.Add(new Arrow(Color.blue));
-                        if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null)
-                        {
-                            Snitch.localArrows[arrowIndex].arrow.SetActive(true);
-                            Snitch.localArrows[arrowIndex].Update(p.transform.position);
-                        }
-                        arrowIndex++;
-                    }
-                }
-            }
-        }
-
-        static void bountyHunterUpdate() {
-            if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
-
-            if (BountyHunter.bountyHunter.Data.IsDead) {
-                if (BountyHunter.arrow != null || BountyHunter.arrow.arrow != null) UnityEngine.Object.Destroy(BountyHunter.arrow.arrow);
-                BountyHunter.arrow = null;
-                BountyHunter.bounty = null;
-                // TODO: deadctivate overlays of players and cd if we have one
-                return;
-            }
-
-            BountyHunter.arrowUpdateTimer -= Time.fixedDeltaTime;
-            BountyHunter.bountyUpdateTimer -= Time.fixedDeltaTime;
-
-            if (BountyHunter.bounty == null || BountyHunter.bountyUpdateTimer <= 0f) {
-                // Set new bounty
-                BountyHunter.bounty = null;
-                BountyHunter.arrowUpdateTimer = 0f; // Force arrow to update
-                var possibleTargets = new List<PlayerControl>();
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
-                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.IsImpostor && p != Spy.spy) possibleTargets.Add(p);
-                }
-                BountyHunter.bounty = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
-                if (BountyHunter.bounty == null) return;
-
-                // Show poolable player
-                if (HudManager.Instance != null && HudManager.Instance.UseButton != null) {
-                    foreach (PoolablePlayer pp in MapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-                    if (MapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
-                        MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(true);
-                }
-            }
-
-            // Update Arrow
-            if (BountyHunter.showArrow && BountyHunter.bounty != null) {
-                if (BountyHunter.arrow == null) BountyHunter.arrow = new Arrow(Color.red);
-                if (BountyHunter.arrowUpdateTimer <= 0f) {
-                    BountyHunter.arrow.Update(BountyHunter.bounty.transform.position);
-                    BountyHunter.arrowUpdateTimer = BountyHunter.arrowUpdateIntervall;
-                }
-                BountyHunter.arrow.Update();
-            }
-        }
-
         public static void Postfix(PlayerControl __instance) {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
 
@@ -559,10 +476,6 @@ namespace TheOtherRoles {
                 securityGuardSetTarget();
                 // Arsonist
                 arsonistSetTarget();
-                // Snitch
-                snitchUpdate();
-                // BountyHunter
-                bountyHunterUpdate();
             } 
         }
     }
@@ -600,7 +513,7 @@ namespace TheOtherRoles {
     class RpcMurderPlayer {
         public static bool Prefix([HarmonyArgument(0)]PlayerControl target) {
             if (Helpers.handleMurderAttempt(target)) { // Custom checks
-                if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini || BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter) { // Not checked by official servers
+                if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini) { // Not checked by official servers
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedMurderPlayer, Hazel.SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(target.PlayerId);
@@ -736,16 +649,6 @@ namespace TheOtherRoles {
                 var multiplier = Mini.isGrownUp() ? 0.66f : 2f;
                 Mini.mini.SetKillTimer(PlayerControl.GameOptions.KillCooldown * multiplier);
             }
-
-            // Set bountyHunter cooldown
-            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter) {
-                if (target == BountyHunter.bounty) {
-                    BountyHunter.bountyHunter.SetKillTimer(BountyHunter.bountyKillCooldown);
-                    BountyHunter.bountyUpdateTimer = 0f; // Force bounty update
-                }
-                else
-                    BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
-            }
         }
     }
 
@@ -754,12 +657,10 @@ namespace TheOtherRoles {
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)]float time) {
             if (PlayerControl.GameOptions.KillCooldown <= 0f) return false;
             float multiplier = 1f;
-            float addition = 0f;
             if (Mini.mini != null && PlayerControl.LocalPlayer == Mini.mini && Mini.mini.Data.IsImpostor) multiplier = Mini.isGrownUp() ? 0.66f : 2f;
-            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter) addition = BountyHunter.punishmentTime;
 
-            __instance.killTimer = Mathf.Clamp(time, 0f, PlayerControl.GameOptions.KillCooldown * multiplier + addition);
-            DestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, PlayerControl.GameOptions.KillCooldown * multiplier + addition);
+            __instance.killTimer = Mathf.Clamp(time, 0f, PlayerControl.GameOptions.KillCooldown * multiplier);
+            DestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, PlayerControl.GameOptions.KillCooldown * multiplier);
             return false;
         }
     }

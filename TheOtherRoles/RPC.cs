@@ -44,7 +44,6 @@ namespace TheOtherRoles
         SecurityGuard,
         Arsonist,
         Guesser,
-        BountyHunter,
         Crewmate,
         Impostor
     }
@@ -226,9 +225,6 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Guesser:
                         Guesser.guesser = player;
-                        break;
-                    case RoleId.BountyHunter:
-                        BountyHunter.bountyHunter = player;
                         break;
                     }
                 }
@@ -577,7 +573,6 @@ namespace TheOtherRoles
                 }
             }
             if (player == Sidekick.sidekick) Sidekick.clearAndReload();
-            if (player == BountyHunter.bountyHunter) BountyHunter.clearAndReload();
         }
 
         public static void setFutureErased(byte playerId) {
@@ -681,7 +676,7 @@ namespace TheOtherRoles
             if (HudManager.Instance != null && Guesser.guesser != null && PlayerControl.LocalPlayer == target)
                 HudManager.Instance.KillOverlay.ShowOne(Guesser.guesser.Data, target.Data);
         }
-    }   
+    }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
     class RPCHandlerPatch
