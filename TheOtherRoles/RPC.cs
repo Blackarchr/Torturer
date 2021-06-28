@@ -687,23 +687,12 @@ namespace TheOtherRoles
 
         public static void torture(byte target)
         {
-            if (Torturer.torturedPlayer != null && Helpers.playerById(target) == PlayerControl.LocalPlayer && HudManager.Instance?.FullScreen != null)
+            if (Torturer.torturedPlayer != null /**&& Helpers.playerById(target) == PlayerControl.LocalPlayer**/)
             {
+                HudManager.Instance.FullScreen.color = new Color(0.9f, 0f, 0.2f, 1f);
                 HudManager.Instance.FullScreen.enabled = true;
-                HudManager.Instance.StartCoroutine(Effects.Lerp(Torturer.duration, new Action<float>((p) =>
-                {
-                    var renderer = HudManager.Instance.FullScreen;
-                    if (p < 0.5)
-                    {
-                        if (renderer != null)
-                            renderer.color = new Color(35f / 255f, 35f / 255f, 35f / 255f, Mathf.Clamp01(p * 2 * 0.75f));
-                    }
-                    else
-                    {
-                        if (renderer != null)
-                            renderer.color = new Color(35f / 255f, 35f / 255f, 35f / 255f, Mathf.Clamp01(1 - p) * 2 * 0.75f);
-                    }
-                    if (p == Torturer.duration && renderer != null) renderer.enabled = false;
+                HudManager.Instance.StartCoroutine(Effects.Lerp(Torturer.duration, new Action<float>((p) => {
+                    if (p == 1f) HudManager.Instance.FullScreen.enabled = false;
                 })));
             }
         }
