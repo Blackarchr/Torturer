@@ -342,21 +342,21 @@ namespace TheOtherRoles {
             foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                 if (p != PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead) continue;
 
-                Transform playerInfoTransform = p.transform.FindChild("Info");
+                Transform playerInfoTransform = p.nameText.transform.parent.FindChild("Info");
                 TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                 if (playerInfo == null) {
                     playerInfo = UnityEngine.Object.Instantiate(p.nameText, p.nameText.transform.parent);
-                    playerInfo.transform.localPosition += Vector3.up * 0.25f;
+                    playerInfo.transform.localPosition += Vector3.up * 0.5f;
                     playerInfo.fontSize *= 0.75f;
                     playerInfo.gameObject.name = "Info";
                 }
 
                 PlayerVoteArea playerVoteArea = MeetingHud.Instance?.playerStates?.FirstOrDefault(x => x.TargetPlayerId == p.PlayerId);
-                Transform meetingInfoTransform = playerVoteArea != null ? playerVoteArea.transform.FindChild("Info") : null;
+                Transform meetingInfoTransform = playerVoteArea != null ? playerVoteArea.NameText.transform.parent.FindChild("Info") : null;
                 TMPro.TextMeshPro meetingInfo = meetingInfoTransform != null ? meetingInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
                 if (meetingInfo == null && playerVoteArea != null) {
                     meetingInfo = UnityEngine.Object.Instantiate(playerVoteArea.NameText, playerVoteArea.NameText.transform.parent);
-                    meetingInfo.transform.localPosition += Vector3.down * (MeetingHud.Instance.playerStates.Length > 10 ? 0.4f : 0.25f);
+                    meetingInfo.transform.localPosition += Vector3.down * 0.20f;
                     meetingInfo.fontSize *= 0.75f;
                     meetingInfo.gameObject.name = "Info";
                 }
@@ -462,19 +462,58 @@ namespace TheOtherRoles {
             }
         }
 
-        static void bountyHunterUpdate()
-        {
-            if (BountyHunter.bountyHunter == null || BountyHunter.bountyHunter.Data.IsDead || PlayerControl.LocalPlayer != BountyHunter.bountyHunter || BountyHunter.arrow == null) return;
+        static void bountyHunterUpdate() {
+            if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
 
-            BountyHunter.timeUntilUpdate -= Time.fixedDeltaTime;
-            if (BountyHunter.timeUntilUpdate <= 0f)
-            {
-                BountyHunter.getRandomTarget();
-                BountyHunter.arrow.arrow.SetActive(true);
-                BountyHunter.arrow.Update(BountyHunter.target.transform.position);
-                BountyHunter.timeUntilUpdate = BountyHunter.updateIntervall;
+            if (BountyHunter.bountyHunter.Data.IsDead) {
+                if (BountyHunter.arrow != null || BountyHunter.arrow.arrow != null) UnityEngine.Object.Destroy(BountyHunter.arrow.arrow);
+                BountyHunter.arrow = null;
+                if (BountyHunter.cooldownText != null && BountyHunter.cooldownText.gameObject != null) UnityEngine.Object.Destroy(BountyHunter.cooldownText.gameObject);
+                BountyHunter.cooldownText = null;
+                BountyHunter.bounty = null;
+                foreach (PoolablePlayer p in MapOptions.playerIcons.Values) {
+                    if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+                }
+                return;
             }
-            BountyHunter.arrow.Update();
+
+            BountyHunter.arrowUpdateTimer -= Time.fixedDeltaTime;
+            BountyHunter.bountyUpdateTimer -= Time.fixedDeltaTime;
+
+            if (BountyHunter.bounty == null || BountyHunter.bountyUpdateTimer <= 0f) {
+                // Set new bounty
+                BountyHunter.bounty = null;
+                BountyHunter.arrowUpdateTimer = 0f; // Force arrow to update
+                BountyHunter.bountyUpdateTimer = BountyHunter.bountyDuration;
+                var possibleTargets = new List<PlayerControl>();
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
+                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.IsImpostor && p != Spy.spy && (p != Mini.mini || Mini.isGrownUp())) possibleTargets.Add(p);
+                }
+                BountyHunter.bounty = possibleTargets[TheOtherRoles.rnd.Next(0, possibleTargets.Count)];
+                if (BountyHunter.bounty == null) return;
+
+                // Show poolable player
+                if (HudManager.Instance != null && HudManager.Instance.UseButton != null) {
+                    foreach (PoolablePlayer pp in MapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    if (MapOptions.playerIcons.ContainsKey(BountyHunter.bounty.PlayerId) && MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject != null)
+                        MapOptions.playerIcons[BountyHunter.bounty.PlayerId].gameObject.SetActive(true);
+                }
+            }
+
+            // Update Cooldown Text
+            if (BountyHunter.cooldownText != null) {
+                BountyHunter.cooldownText.text = Mathf.CeilToInt(Mathf.Clamp(BountyHunter.bountyUpdateTimer, 0, BountyHunter.bountyDuration)).ToString();
+            } 
+
+            // Update Arrow
+            if (BountyHunter.showArrow && BountyHunter.bounty != null) {
+                if (BountyHunter.arrow == null) BountyHunter.arrow = new Arrow(Color.red);
+                if (BountyHunter.arrowUpdateTimer <= 0f) {
+                    BountyHunter.arrow.Update(BountyHunter.bounty.transform.position);
+                    BountyHunter.arrowUpdateTimer = BountyHunter.arrowUpdateIntervall;
+                }
+                BountyHunter.arrow.Update();
+            }
         }
 
         public static void Postfix(PlayerControl __instance) {
@@ -709,14 +748,13 @@ namespace TheOtherRoles {
             }
 
             // Set bountyHunter cooldown
-            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter)
-            {
-                if (target == BountyHunter.target)
-                {
-                    BountyHunter.bountyHunter.SetKillTimer(0);
-                    BountyHunter.getRandomTarget();
+            if (BountyHunter.bountyHunter != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter && __instance == BountyHunter.bountyHunter) {
+                if (target == BountyHunter.bounty) {
+                    BountyHunter.bountyHunter.SetKillTimer(BountyHunter.bountyKillCooldown);
+                    BountyHunter.bountyUpdateTimer = 0f; // Force bounty update
                 }
-                else BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
+                else
+                    BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
             }
         }
     }

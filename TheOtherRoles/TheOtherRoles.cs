@@ -270,6 +270,7 @@ namespace TheOtherRoles
 
         public static PlayerControl futureShift;
         public static PlayerControl currentTarget;
+        public static bool shiftModifiers = false;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -282,6 +283,7 @@ namespace TheOtherRoles
             shifter = null;
             currentTarget = null;
             futureShift = null;
+            shiftModifiers = CustomOptionHolder.shifterShiftsModifiers.getBool();
         }
     }
 
@@ -344,6 +346,16 @@ namespace TheOtherRoles
             lover2 = null;
             notAckedExiledIsLover = false;
             bothDie = CustomOptionHolder.loversBothDie.getBool();
+        }
+
+        public static PlayerControl getPartner(this PlayerControl player) {
+            if (player == null)
+                return null;
+            if (lover1 == player)
+                return lover2;
+            if (lover2 == player)
+                return lover1;
+            return null;
         }
     }
 
@@ -611,7 +623,6 @@ namespace TheOtherRoles
         public static PlayerControl jackal;
         public static Color color = new Color32(0, 180, 235, byte.MaxValue);
         public static PlayerControl fakeSidekick;
-
         public static PlayerControl currentTarget;
         public static List<PlayerControl> formerJackals = new List<PlayerControl>();
         
@@ -890,7 +901,6 @@ namespace TheOtherRoles
         public static PlayerControl currentTarget;
         public static PlayerControl douseTarget;
         public static List<PlayerControl> dousedPlayers = new List<PlayerControl>();
-        public static Dictionary<byte, PoolablePlayer> dousedIcons = new Dictionary<byte, PoolablePlayer>();
 
         private static Sprite douseSprite;
         public static Sprite getDouseSprite() {
@@ -916,12 +926,9 @@ namespace TheOtherRoles
             douseTarget = null; 
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
-            foreach (PoolablePlayer p in dousedIcons.Values) {
-                if (p != null && p.gameObject != null) { 
-                    UnityEngine.Object.Destroy(p.gameObject);
-                }
+            foreach (PoolablePlayer p in MapOptions.playerIcons.Values) {
+                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
             }
-            dousedIcons = new Dictionary<byte, PoolablePlayer>();
             cooldown = CustomOptionHolder.arsonistCooldown.getFloat();
             duration = CustomOptionHolder.arsonistDuration.getFloat();
         }
@@ -947,58 +954,42 @@ namespace TheOtherRoles
         }
     }
 
-    public static class BountyHunter
-    {
+    public static class BountyHunter {
         public static PlayerControl bountyHunter;
-        public static PlayerControl currentTarget;
-        public static PlayerControl target;
-        public static PoolablePlayer showTarget;
         public static Color color = Palette.ImpostorRed;
 
-        public static Arrow arrow = new Arrow(color);
-        public static float updateIntervall = 30f;
-        public static float timeUntilUpdate = 0f;
-        public static float punishmentTime = 30f;
-        public static List <PlayerControl> accessibletargets;
+        public static Arrow arrow;
+        public static float bountyDuration = 30f;
+        public static bool showArrow = true;
+        public static float bountyKillCooldown = 0f;
+        public static float punishmentTime = 15f;
+        public static float arrowUpdateIntervall = 10f;
 
-        public static void getRandomTarget()
-        {
-            Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
-            bottomLeft += new Vector3(0, 0, 0);
+        public static float arrowUpdateTimer = 0f;
+        public static float bountyUpdateTimer = 0f;
+        public static PlayerControl bounty;
+        public static TMPro.TextMeshPro cooldownText;
 
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-            {
-                if (!p.Data.IsDead && p != p.Data.IsImpostor && p != Spy.spy)
-                    accessibletargets.Add(p);
-                else if (p.Data.IsDead || p.Data.IsImpostor)
-                {
-                    accessibletargets.Remove(p);
-                    if (showTarget == MapOptions.poolablePlayer[p.PlayerId]) showTarget.gameObject.SetActive(false);
-
-                }
-            }
-
-            target = accessibletargets[TheOtherRoles.rnd.Next(0, accessibletargets.Count)];
-            if (showTarget != null) showTarget.gameObject.SetActive(false);
-            if (MapOptions.poolablePlayer.ContainsKey(target.PlayerId))
-            {
-                showTarget = MapOptions.poolablePlayer[target.PlayerId];
-                showTarget.transform.localPosition = bottomLeft + Vector3.right * 0.2f;
-                showTarget.transform.localScale = Vector3.one * 0.9f;
-                showTarget.gameObject.SetActive(true);
-            };
-        }
-        public static void clearAndReload()
-        {
+        public static void clearAndReload() {
             arrow = new Arrow(color);
             bountyHunter = null;
-            currentTarget = null;
-            target = null;
-            showTarget = null;
-            updateIntervall = CustomOptionHolder.bountyHunterUpdateIntervall.getFloat();
+            bounty = null;
+            arrowUpdateTimer = 0f;
+            bountyUpdateTimer = 0f;
+            if (arrow != null && arrow.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
+            arrow = null;
+            if (cooldownText != null && cooldownText.gameObject != null) UnityEngine.Object.Destroy(cooldownText.gameObject);
+            cooldownText = null;
+            foreach (PoolablePlayer p in MapOptions.playerIcons.Values) {
+                if (p != null && p.gameObject != null) p.gameObject.SetActive(false);
+            }
+
+
+            bountyDuration = CustomOptionHolder.bountyHunterBountyDuration.getFloat();
+            bountyKillCooldown = CustomOptionHolder.bountyHunterReducedCooldown.getFloat();
             punishmentTime = CustomOptionHolder.bountyHunterPunishmentTime.getFloat();
-            accessibletargets = new List<PlayerControl>();
-            timeUntilUpdate = 0f;
+            showArrow = CustomOptionHolder.bountyHunterShowArrow.getBool();
+            arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat();
         }
     }
 }

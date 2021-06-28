@@ -10,13 +10,12 @@ namespace TheOtherRoles
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
     class IntroCutsceneOnDestroyPatch
     {
-        public static void Prefix(IntroCutscene __instance)
-        {
-            if (PlayerControl.LocalPlayer != null && HudManager.Instance != null)
-            {
-                int playerCounter = 0;
-                foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-                {
+        public static void Prefix(IntroCutscene __instance) {
+            // Generate and initialize player icons
+            int playerCounter = 0;
+            if (PlayerControl.LocalPlayer != null && HudManager.Instance != null) {
+                Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
+                foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                     GameData.PlayerInfo data = p.Data;
                     PoolablePlayer player = UnityEngine.Object.Instantiate<PoolablePlayer>(__instance.PlayerPrefab, HudManager.Instance.transform);
                     PlayerControl.SetPlayerMaterialColors(data.ColorId, player.Body);
@@ -25,24 +24,32 @@ namespace TheOtherRoles
                     PlayerControl.SetPetImage(data.PetId, data.ColorId, player.PetSlot);
                     player.NameText.text = data.PlayerName;
                     player.SetFlipX(true);
-                    player.setSemiTransparent(false);
-                    player.gameObject.SetActive(false);
-                    MapOptions.poolablePlayer[p.PlayerId] = player;
+                    MapOptions.playerIcons[p.PlayerId] = player;
 
-                    // Arsonist 
-                    if (PlayerControl.LocalPlayer == Arsonist.arsonist) {
-                        Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
-                        bottomLeft += new Vector3(-0.25f, -0.25f, 0);
-
-                        if (p != Arsonist.arsonist) {
-                            player.transform.localPosition = bottomLeft + Vector3.right * playerCounter * 0.35f;
-                            player.transform.localScale = Vector3.one * 0.3f;
-                            player.setSemiTransparent(true);
-                            Arsonist.dousedIcons[p.PlayerId] = player;
-                            Arsonist.dousedIcons[p.PlayerId].gameObject.SetActive(true);
-                            playerCounter++;
-                        }
+                    if (PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist) {
+                        player.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.25f, 0) + Vector3.right * playerCounter++ * 0.35f;
+                        player.transform.localScale = Vector3.one * 0.2f;
+                        player.setSemiTransparent(true);
+                        player.gameObject.SetActive(true);
+                    } else if (PlayerControl.LocalPlayer == BountyHunter.bountyHunter) {
+                        player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
+                        player.transform.localScale = Vector3.one * 0.4f;
+                        player.gameObject.SetActive(false);
+                    } else {
+                        player.gameObject.SetActive(false);
                     }
+                }
+            }
+
+            // Force Bounty Hunter to load a new Bounty when the Intro is over
+            if (BountyHunter.bounty != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter) {
+                BountyHunter.bountyUpdateTimer = 0f;
+                if (HudManager.Instance != null) {
+                    Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z) + new Vector3(-0.25f, 1f, 0);
+                    BountyHunter.cooldownText = UnityEngine.Object.Instantiate<TMPro.TextMeshPro>(HudManager.Instance.KillButton.TimerText, HudManager.Instance.transform);
+                    BountyHunter.cooldownText.alignment = TMPro.TextAlignmentOptions.Center;
+                    BountyHunter.cooldownText.transform.localPosition = bottomLeft + new Vector3(0f, -1f, -1f);
+                    BountyHunter.cooldownText.gameObject.SetActive(true);
                 }
             }
         }
