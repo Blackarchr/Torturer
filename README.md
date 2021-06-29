@@ -1,11 +1,3 @@
-![eisbison banner](./Images/TOR_logo.png)
-<p align="center">
-This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.</p>
-
-[![Discord](./Images/TOR_server.png)](https://discord.gg/77RkMJHWsM)
-![eisbison infographic](./Images/TOR_roles.jpg)
-
-
 # The Other Roles
 
 The **The Other Roles**, is a mod for [Among Us](https://store.steampowered.com/app/945360/Among_Us) which adds many new roles, new [Settings](#settings), new [Custom Hats](#custom-hats) and support for [10+ Player Lobbies](#Custom-Servers-and-10+-Players) to the game.
@@ -26,7 +18,7 @@ Even more roles are coming soon :)
 | [Trickster](#trickster) | [Sheriff](#sheriff) |  |  |
 | [Vampire](#vampire) | [Shifter](#shifter) |  |  |
 | [Warlock](#warlock) | [Snitch](#snitch) |  |  |
-|  | [Spy](#spy) |  |  |
+| [Torturer](#torturer) | [Spy](#spy) |  |  |
 |  | [Swapper](#swapper) |  |  |
 |  | [Time Master](#time-master) |  |  |
 |  |  [Tracker](#tracker) |  |  |
@@ -70,6 +62,10 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 # Changelog
 <details>
   <summary>Click to show the Changelog</summary>
+
+  **Version 2.7.2**
+- Fixed possibility to Shift the Spy as it breaks the Spy role.
+- Torturer added to TheOtherRoles
 
 **Version 2.7.1**
 - Fixed a bug where swapped votes were sometimes counted wrongly
