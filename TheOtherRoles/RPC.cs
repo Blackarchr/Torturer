@@ -685,14 +685,20 @@ namespace TheOtherRoles
                     HudManager.Instance.KillOverlay.ShowKillAnimation(partner.Data, partner.Data);
         }
 
-        public static void torture(byte target)
+        public static void torture(byte targetId)
         {
-            if (Torturer.torturedPlayer != null /**&& Helpers.playerById(target) == PlayerControl.LocalPlayer**/)
+            if (Helpers.playerById(targetId) == PlayerControl.LocalPlayer)
             {
+                PlayerControl.LocalPlayer.moveable = false;
                 HudManager.Instance.FullScreen.color = new Color(0.9f, 0f, 0.2f, 1f);
                 HudManager.Instance.FullScreen.enabled = true;
-                HudManager.Instance.StartCoroutine(Effects.Lerp(Torturer.duration, new Action<float>((p) => {
-                    if (p == 1f) HudManager.Instance.FullScreen.enabled = false;
+                HudManager.Instance.StartCoroutine(Effects.Lerp(Torturer.duration, new Action<float>((p) =>
+                {
+                    if (p == 1f)
+                    {
+                        HudManager.Instance.FullScreen.enabled = false;
+                        PlayerControl.LocalPlayer.moveable = true;
+                    }
                 })));
             }
         }

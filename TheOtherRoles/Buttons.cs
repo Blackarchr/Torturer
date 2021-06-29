@@ -746,7 +746,6 @@ namespace TheOtherRoles
                 () => {
                     bool dousedEveryoneAlive = Arsonist.dousedEveryoneAlive();
                     if (dousedEveryoneAlive) arsonistButton.killButtonManager.renderer.sprite = Arsonist.getIgniteSprite();
-
                     if (arsonistButton.isEffectActive && Arsonist.douseTarget != Arsonist.currentTarget) {
                         Arsonist.douseTarget = null;
                         arsonistButton.Timer = 0f;
@@ -784,10 +783,11 @@ namespace TheOtherRoles
                 {
                     if (Torturer.torturedPlayer != null)
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Torture, Hazel.SendOption.Reliable, -1);
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(Torturer.torturedPlayer.NetId, (byte)CustomRPC.Torture, Hazel.SendOption.Reliable, -1);
+                        writer.Write(Torturer.torturedPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        Torturer.sendChatInfo();
                         RPCProcedure.torture(Torturer.torturedPlayer.PlayerId);
+                        Torturer.sendChatInfo();
                         Torturer.torturedPlayer = null;
                         torturerButton.EffectDuration = Torturer.duration;
                     }
