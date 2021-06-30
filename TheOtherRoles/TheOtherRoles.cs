@@ -58,6 +58,7 @@ namespace TheOtherRoles
         public static class Jester {
             public static PlayerControl jester;
             public static Color color = new Color32(236, 98, 165, byte.MaxValue);
+            
 
             public static bool triggerJesterWin = false;
             public static bool canCallEmergency = true;
@@ -74,6 +75,7 @@ namespace TheOtherRoles
         public static class Mayor {
             public static PlayerControl mayor;
             public static Color color = new Color32(32, 77, 66, byte.MaxValue);
+            
 
             public static void clearAndReload() {
                 mayor = null;
@@ -85,6 +87,7 @@ namespace TheOtherRoles
             public static Color color = new Color32(0, 40, 245, byte.MaxValue);
             public static bool usedRepair;
             private static Sprite buttonSprite;
+            
 
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
@@ -101,6 +104,7 @@ namespace TheOtherRoles
         public static class Godfather {
             public static PlayerControl godfather;
             public static Color color = Palette.ImpostorRed;
+            
 
             public static void clearAndReload() {
                 godfather = null;
@@ -110,6 +114,7 @@ namespace TheOtherRoles
         public static class Mafioso {
             public static PlayerControl mafioso;
             public static Color color = Palette.ImpostorRed;
+            
 
             public static void clearAndReload() {
                 mafioso = null;
@@ -120,6 +125,7 @@ namespace TheOtherRoles
         public static class Janitor {
             public static PlayerControl janitor;
             public static Color color = Palette.ImpostorRed;
+            
 
             public static float cooldown = 30f;
 
@@ -139,6 +145,7 @@ namespace TheOtherRoles
         public static class Sheriff {
             public static PlayerControl sheriff;
             public static Color color = new Color32(248, 205, 70, byte.MaxValue);
+            
 
             public static float cooldown = 30f;
             public static bool canKillNeutrals = false;
@@ -159,6 +166,7 @@ namespace TheOtherRoles
             public static PlayerControl lighter;
             public static Color color = new Color32(238, 229, 190, byte.MaxValue);
             
+
             public static float lighterModeLightsOnVision = 2f;
             public static float lighterModeLightsOffVision = 0.75f;
 
@@ -187,6 +195,7 @@ namespace TheOtherRoles
         public static class Detective {
             public static PlayerControl detective;
             public static Color color = new Color32(45, 106, 165, byte.MaxValue);
+            
 
             public static float footprintIntervall = 1f;
             public static float footprintDuration = 1f;
@@ -210,6 +219,7 @@ namespace TheOtherRoles
     public static class TimeMaster {
         public static PlayerControl timeMaster;
         public static Color color = new Color32(112, 142, 239, byte.MaxValue);
+        
 
         public static bool reviveDuringRewind = false;
         public static float rewindTime = 3f;
@@ -241,6 +251,7 @@ namespace TheOtherRoles
         public static PlayerControl shielded;
         public static Color color = new Color32(126, 251, 194, byte.MaxValue);
         public static bool usedShield;
+        
 
         public static int showShielded = 0;
         public static bool showAttemptToShielded = false;
@@ -268,6 +279,7 @@ namespace TheOtherRoles
     public static class Shifter {
         public static PlayerControl shifter;
         public static Color color = new Color32(102, 102, 102, byte.MaxValue);
+        
 
         public static PlayerControl futureShift;
         public static PlayerControl currentTarget;
@@ -291,6 +303,7 @@ namespace TheOtherRoles
     public static class Swapper {
         public static PlayerControl swapper;
         public static Color color = new Color32(134, 55, 86, byte.MaxValue);
+        
         private static Sprite spriteCheck;
         public static bool canCallEmergency = false;
         public static bool canOnlySwapOthers = false;
@@ -364,6 +377,7 @@ namespace TheOtherRoles
         public static PlayerControl seer;
         public static Color color = new Color32(97, 178, 108, byte.MaxValue);
         public static List<Vector3> deadBodyPositions = new List<Vector3>();
+        
 
         public static float soulDuration = 15f;
         public static bool limitSoulDuration = false;
@@ -390,7 +404,8 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
-    
+        
+
         public static float cooldown = 30f;
         public static float duration = 10f;
 
@@ -438,7 +453,7 @@ namespace TheOtherRoles
     public static class Camouflager {
         public static PlayerControl camouflager;
         public static Color color = Palette.ImpostorRed;
-    
+        
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
@@ -477,7 +492,7 @@ namespace TheOtherRoles
     public static class Hacker {
         public static PlayerControl hacker;
         public static Color color = new Color32(117, 250, 76, byte.MaxValue);
-
+        
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static bool onlyColorType = false;
@@ -502,6 +517,7 @@ namespace TheOtherRoles
     public static class Mini {
         public static PlayerControl mini;
         public static Color color = Color.white;
+        
         public const float defaultColliderRadius = 0.2233912f;
             public const float defaultColliderOffset = 0.3636057f;
 
@@ -531,7 +547,7 @@ namespace TheOtherRoles
     public static class Tracker {
         public static PlayerControl tracker;
         public static Color color = new Color32(100, 58, 220, byte.MaxValue);
-
+        
         public static float updateIntervall = 5f;
 
         public static PlayerControl currentTarget;
@@ -604,7 +620,7 @@ namespace TheOtherRoles
     public static class Snitch {
         public static PlayerControl snitch;
         public static Color color = new Color32(184, 251, 79, byte.MaxValue);
-
+        
         public static List<Arrow> localArrows = new List<Arrow>();
         public static int taskCountForImpostors = 1;
 
@@ -670,7 +686,7 @@ namespace TheOtherRoles
     public static class Sidekick {
         public static PlayerControl sidekick;
         public static Color color = new Color32(0, 180, 235, byte.MaxValue);
-
+        
         public static PlayerControl currentTarget;
 
         public static float cooldown = 30f;
@@ -693,7 +709,7 @@ namespace TheOtherRoles
     public static class Eraser {
         public static PlayerControl eraser;
         public static Color color = Palette.ImpostorRed;
-
+        
         public static List<PlayerControl> futureErased = new List<PlayerControl>();
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
@@ -718,7 +734,7 @@ namespace TheOtherRoles
     public static class Spy {
         public static PlayerControl spy;
         public static Color color = Palette.ImpostorRed;
-
+        
         public static bool impostorsCanKillAnyone = true;
         public static bool canEnterVents = false;
         public static bool hasImpostorVision = false;
@@ -738,7 +754,7 @@ namespace TheOtherRoles
         public static float lightsOutCooldown = 30f;
         public static float lightsOutDuration = 10f;
         public static float lightsOutTimer = 0f;
-
+        
         private static Sprite placeBoxButtonSprite;
         private static Sprite lightOutButtonSprite;
         private static Sprite tricksterVentButtonSprite;
@@ -775,7 +791,7 @@ namespace TheOtherRoles
     public static class Cleaner {
         public static PlayerControl cleaner;
         public static Color color = Palette.ImpostorRed;
-
+        
         public static float cooldown = 30f;
 
         private static Sprite buttonSprite;
@@ -795,7 +811,7 @@ namespace TheOtherRoles
 
         public static PlayerControl warlock;
         public static Color color = Palette.ImpostorRed;
-
+        
         public static PlayerControl currentTarget;
         public static PlayerControl curseVictim;
         public static PlayerControl curseVictimTarget;
@@ -843,7 +859,7 @@ namespace TheOtherRoles
     public static class SecurityGuard {
         public static PlayerControl securityGuard;
         public static Color color = new Color32(195, 178, 95, byte.MaxValue);
-
+        
         public static float cooldown = 30f;
         public static int remainingScrews = 7;
         public static int totalScrews = 7;
@@ -894,7 +910,7 @@ namespace TheOtherRoles
     public static class Arsonist {
         public static PlayerControl arsonist;
         public static Color color = new Color32(238, 112, 46, byte.MaxValue);
-
+        
         public static float cooldown = 30f;
         public static float duration = 3f;
         public static bool triggerArsonistWin = false;
@@ -939,7 +955,7 @@ namespace TheOtherRoles
         public static PlayerControl guesser;
         public static Color color = new Color32(255, 255, 0, byte.MaxValue);
         private static Sprite targetSprite;
-
+        
         public static int remainingShots = 2;
 
         public static Sprite getTargetSprite() {
@@ -958,7 +974,7 @@ namespace TheOtherRoles
     public static class BountyHunter {
         public static PlayerControl bountyHunter;
         public static Color color = Palette.ImpostorRed;
-
+        
         public static Arrow arrow;
         public static float bountyDuration = 30f;
         public static bool showArrow = true;
@@ -998,7 +1014,7 @@ namespace TheOtherRoles
     {
         public static PlayerControl torturer;
         public static Color color = Palette.ImpostorRed;
-
+        
         public static float cooldown = 30f;
         public static float duration = 5f;
 
@@ -1024,15 +1040,26 @@ namespace TheOtherRoles
         public static void sendChatInfo()
         {
             string msg;
-            if (torturedPlayer.Data.IsImpostor || torturedPlayer == Guesser.guesser || torturedPlayer == Jackal.jackal || torturedPlayer == Sidekick.sidekick || torturedPlayer == Spy.spy)
+            if (RoleInfo.isCrew(torturedPlayer))
             {
-                msg = $"{torturedPlayer.name} seems to be <color=#FF1919FF>DANGEROUS</color>!";
+                if (new Random().Next(2) == 0)
+                {
+                    msg = RoleInfo.getRole(torturedPlayer) + " | " + RoleInfo.getRole(false) + " | " + RoleInfo.getRole(true);
+                }
+                else
+                {
+                    msg = RoleInfo.getRole(true) + " | " + RoleInfo.getRole(false) + " | " + RoleInfo.getRole(torturedPlayer, true);
+                }
+            }
+            else if (torturedPlayer.Data.isImposter)
+            {
+                msg = "Imposter oder Spy";
             }
             else
             {
-                msg = $"{torturedPlayer.name} seems to be <color=#5e5e5e>HARMLESS</color>!";
+                msg = RoleInfo.getRole(true) + " | " + RoleInfo.getRole(torturedPlayer) + " | " + RoleInfo.getRole(true);
             }
-            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, msg);
+            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{torturedPlayer.name}: {msg}");
         }
 
         public static  void clearAndReload()

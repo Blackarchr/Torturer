@@ -96,6 +96,33 @@ namespace TheOtherRoles
         Torture
     }
 
+    enum Crewroles 
+    {
+        Mayor,
+        Engineer,
+        Sheriff,
+        Lighter,
+        Detective,
+        TimeMaster,
+        Medic,
+        Shifter,
+        Swapper,
+        Seer,
+        Hacker,
+        Tracker,
+        Snitch,
+        SecurityGuard,
+        Crewmate
+    }
+
+    enum Neutralroles
+    {
+        Jackal,
+        Sidekick,
+        Arsonist,
+        Jester
+    }
+
     public static class RPCProcedure {
 
         // Main Controls

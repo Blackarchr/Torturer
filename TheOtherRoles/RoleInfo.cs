@@ -150,5 +150,93 @@ namespace TheOtherRoles
 
             return infos;
         }
+
+        public static bool isCrew(PlayerControl p)
+        {
+            if (p == Jester.jester || p == Arsonist.arsonist || p == Jakcal.jackal || p == Sidekick.sidekick || p.Data.IsImposter)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static String getRole(PlayerControl p)
+        {
+            switch (p)
+            {
+                case Jester.jester:
+                    return "Jester";
+                    break;
+                case Arsonist.arsonist:
+                    return "Arsonist";
+                    break;
+                case Jackal.jackal:
+                    return "Jackal";
+                    break;
+                case Sidekick.sidekick:
+                    return "Sidekick";
+                    break;
+                case Mayor.mayor:
+                    return "Mayor";
+                    break;
+                case Engineer.engineer:
+                    return "Engineer";
+                    break;
+                case Sheriff.sheriff:
+                    return "Sheriff";
+                    break;
+                case Medic.medic:
+                    return "Medic";
+                    break;
+                case Swapper.swapper:
+                    return "Swapper";
+                    break;
+                case Tracker.tracker:
+                    return "Tracker";
+                    break;
+                case TimeMaster.timeMaster:
+                    return "TimeMaster";
+                    break;
+                case Detective.detective:
+                    return "Detective";
+                    break;
+                case Seer.seer:
+                    return "Seer";
+                    break;
+                case Hacker.hacker:
+                    return "Hacker";
+                    break;
+                case Snitch.snitch:
+                    return "Snitch";
+                    break;
+                case Lighter.lighter:
+                    return "Lighter";
+                    break;
+                case Shifter.shifter:
+                    return "Shifter";
+                    break;
+                case SecurityGuard.securityGuard:
+                    return "SecurityGuard";
+                    break;
+                default:
+                    return "Imposter";
+                    break;
+            }
+        }
+
+        public static String getRole(bool crewrole)
+        {
+            if (crewrole)
+            {
+                return (Crewroles)new Random().Next(Enum.GetNames(typeof(Crewroles)).Length + 1).ToString();
+            }
+            else
+            {
+                return (Neutralroles)new Random().Next(Enum.GetName(typeof(Neutralroles)).Length + 1).ToString();
+            }
+        }
     }
 }
