@@ -153,7 +153,7 @@ namespace TheOtherRoles
 
         public static bool isCrew(PlayerControl p)
         {
-            if (p == Jester.jester || p == Arsonist.arsonist || p == Jakcal.jackal || p == Sidekick.sidekick || p.Data.IsImposter)
+            if (p == Jester.jester || p == Arsonist.arsonist || p == Jackal.jackal || p == Sidekick.sidekick || p.Data.IsImpostor)
             {
                 return false;
             }
@@ -163,79 +163,38 @@ namespace TheOtherRoles
             }
         }
 
-        public static String getRole(PlayerControl p)
+        public static String GetRole(PlayerControl p)
         {
-            switch (p)
-            {
-                case Jester.jester:
-                    return "Jester";
-                    break;
-                case Arsonist.arsonist:
-                    return "Arsonist";
-                    break;
-                case Jackal.jackal:
-                    return "Jackal";
-                    break;
-                case Sidekick.sidekick:
-                    return "Sidekick";
-                    break;
-                case Mayor.mayor:
-                    return "Mayor";
-                    break;
-                case Engineer.engineer:
-                    return "Engineer";
-                    break;
-                case Sheriff.sheriff:
-                    return "Sheriff";
-                    break;
-                case Medic.medic:
-                    return "Medic";
-                    break;
-                case Swapper.swapper:
-                    return "Swapper";
-                    break;
-                case Tracker.tracker:
-                    return "Tracker";
-                    break;
-                case TimeMaster.timeMaster:
-                    return "TimeMaster";
-                    break;
-                case Detective.detective:
-                    return "Detective";
-                    break;
-                case Seer.seer:
-                    return "Seer";
-                    break;
-                case Hacker.hacker:
-                    return "Hacker";
-                    break;
-                case Snitch.snitch:
-                    return "Snitch";
-                    break;
-                case Lighter.lighter:
-                    return "Lighter";
-                    break;
-                case Shifter.shifter:
-                    return "Shifter";
-                    break;
-                case SecurityGuard.securityGuard:
-                    return "SecurityGuard";
-                    break;
-                default:
-                    return "Imposter";
-                    break;
-            }
+                if (p == Jester.jester) return "Jester";
+                if (p == Arsonist.arsonist) return "Arsonist";
+                if (p == Jackal.jackal) return "Jackal";
+                if (p == Sidekick.sidekick) return "Sidekick";
+                if (p == Mayor.mayor) return "Mayor";
+                if (p == Engineer.engineer) return "Engineer";
+                if (p == Sheriff.sheriff) return "Sheriff";
+                if (p == Medic.medic) return "Medic";
+                if (p == Swapper.swapper) return "Swapper";
+                if (p == Tracker.tracker) return "Tracker";
+                if (p == TimeMaster.timeMaster) return "TimeMaster";
+                if (p == Detective.detective) return "Detective";
+                if (p == Seer.seer) return "Seer";
+                if (p == Hacker.hacker) return "Hacker";
+                if (p == Snitch.snitch) return "Snitch";
+                if (p == Lighter.lighter) return "Lighter";
+                if (p == Shifter.shifter) return "Shifter";
+                if (p == SecurityGuard.securityGuard) return "SecurityGuard";
+            return null;
         }
 
-        public static String getRole(bool crewrole)
+        public static String GetRole(bool crewrole)
         {
             if (crewrole)
             {
-                return (Crewroles)new Random().Next(Enum.GetNames(typeof(Crewroles)).Length + 1).ToString();
+                return ((Crewroles)new System.Random().Next(Enum.GetNames(typeof(Crewroles)).Length + 1)).ToString();
             }
             else
             {
-                return (Neutralroles)new Random().Next(Enum.GetName(typeof(Neutralroles)).Length + 1).ToString();
+                return ((Neutralroles)new System.Random().Next(Enum.GetNames(typeof(Neutralroles)).Length + 1)).ToString();
             }
         }
     }

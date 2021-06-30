@@ -1042,22 +1042,22 @@ namespace TheOtherRoles
             string msg;
             if (RoleInfo.isCrew(torturedPlayer))
             {
-                if (new Random().Next(2) == 0)
+                if (new System.Random().Next(2) == 0) //random weather the true role is mentioned first or last
                 {
-                    msg = RoleInfo.getRole(torturedPlayer) + " | " + RoleInfo.getRole(false) + " | " + RoleInfo.getRole(true);
+                    msg = RoleInfo.GetRole(torturedPlayer) + " | " + RoleInfo.GetRole(false) + " | " + RoleInfo.GetRole(true);
                 }
                 else
                 {
-                    msg = RoleInfo.getRole(true) + " | " + RoleInfo.getRole(false) + " | " + RoleInfo.getRole(torturedPlayer, true);
+                    msg = RoleInfo.GetRole(true) + " | " + RoleInfo.GetRole(false) + " | " + RoleInfo.GetRole(torturedPlayer);
                 }
             }
-            else if (torturedPlayer.Data.isImposter)
+            else if (torturedPlayer.Data.IsImpostor)
             {
                 msg = "Imposter oder Spy";
             }
             else
             {
-                msg = RoleInfo.getRole(true) + " | " + RoleInfo.getRole(torturedPlayer) + " | " + RoleInfo.getRole(true);
+                msg = RoleInfo.GetRole(true) + " | " + RoleInfo.GetRole(torturedPlayer) + " | " + RoleInfo.GetRole(true);
             }
             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{torturedPlayer.name}: {msg}");
         }

@@ -26,6 +26,6 @@
 
     <Target Name="CopyCustomContent" AfterTargets="AfterBuild">
         <Message Text="Second occurrence" />
-        <Copy SourceFiles="C:\Users\black\source\repos\TheOtherRoles\TheOtherRoles\bin\Debug\netstandard2.1\TheOtherRoles.dll" DestinationFolder="P:\SteamLibrary\steamapps\common\Among Us-Beta\BepInEx\plugins\" />
+        <Copy SourceFiles="C:\Users\black\source\repos\Blackarchr\Torturer\TheOtherRoles\bin\Debug\netstandard2.1\TheOtherRoles.dll" DestinationFolder="P:\SteamLibrary\steamapps\common\Among Us-Beta\BepInEx\plugins\" />
     </Target>
 </Project>
