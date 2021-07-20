@@ -8,10 +8,10 @@ using HarmonyLib;
 using UnhollowerBaseLib;
 using Assets.CoreScripts;
 
-namespace TheOtherRoles {
+namespace TheOtherRoles.Modules {
     public class CustomColors {
         protected static Dictionary<int, string> ColorStrings = new Dictionary<int, string>();
-        public static List<int> lighterColors = new List<int>(){ 3, 4, 5, 7, 10, 11};
+        public static List<int> lighterColors = new List<int>(){ 3, 4, 5, 7, 10, 11, 13, 14, 17 };
         public static uint pickableColors = (uint)Palette.ColorNames.Length;
 
         /* version 1

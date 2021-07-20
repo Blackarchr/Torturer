@@ -10,12 +10,11 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using TheOtherRoles.Objects;
 
-namespace TheOtherRoles
-{
+namespace TheOtherRoles {
     [HarmonyPatch]
-    public static class TheOtherRoles
-    {
+    public static class TheOtherRoles {
         public static System.Random rnd = new System.Random((int)DateTime.Now.Ticks);
 
         public static void clearAndReloadRoles() {
@@ -157,7 +156,7 @@ namespace TheOtherRoles
         public static class Lighter {
             public static PlayerControl lighter;
             public static Color color = new Color32(238, 229, 190, byte.MaxValue);
-            
+
             public static float lighterModeLightsOnVision = 2f;
             public static float lighterModeLightsOffVision = 0.75f;
 
@@ -330,9 +329,9 @@ namespace TheOtherRoles
         }
 
         public static bool existingWithKiller() {
-            return existing() && (lover1 == Jackal.jackal     || lover2 == Jackal.jackal
+            return existing() && (lover1 == Jackal.jackal || lover2 == Jackal.jackal
                                || lover1 == Sidekick.sidekick || lover2 == Sidekick.sidekick
-                               || lover1.Data.IsImpostor      || lover2.Data.IsImpostor);
+                               || lover1.Data.IsImpostor || lover2.Data.IsImpostor);
         }
 
         public static bool hasAliveKillingLover(this PlayerControl player) {
@@ -389,7 +388,7 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
-    
+
         public static float cooldown = 30f;
         public static float duration = 10f;
 
@@ -437,7 +436,7 @@ namespace TheOtherRoles
     public static class Camouflager {
         public static PlayerControl camouflager;
         public static Color color = Palette.ImpostorRed;
-    
+
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
@@ -502,7 +501,7 @@ namespace TheOtherRoles
         public static PlayerControl mini;
         public static Color color = Color.white;
         public const float defaultColliderRadius = 0.2233912f;
-            public const float defaultColliderOffset = 0.3636057f;
+        public const float defaultColliderOffset = 0.3636057f;
 
         public static float growingUpDuration = 400f;
         public static DateTime timeOfGrowthStart = DateTime.UtcNow;
@@ -519,7 +518,7 @@ namespace TheOtherRoles
             if (timeOfGrowthStart == null) return 0f;
 
             float timeSinceStart = (float)(DateTime.UtcNow - timeOfGrowthStart).TotalMilliseconds;
-            return Mathf.Clamp(timeSinceStart/(growingUpDuration*1000), 0f, 1f);
+            return Mathf.Clamp(timeSinceStart / (growingUpDuration * 1000), 0f, 1f);
         }
 
         public static bool isGrownUp() {
@@ -570,7 +569,7 @@ namespace TheOtherRoles
         public static bool garlicsActive = true;
 
         public static PlayerControl currentTarget;
-        public static PlayerControl bitten; 
+        public static PlayerControl bitten;
         public static bool targetNearGarlic = false;
 
         private static Sprite buttonSprite;
@@ -611,7 +610,7 @@ namespace TheOtherRoles
             if (localArrows != null) {
                 foreach (Arrow arrow in localArrows)
                     if (arrow?.arrow != null)
-                    UnityEngine.Object.Destroy(arrow.arrow);
+                        UnityEngine.Object.Destroy(arrow.arrow);
             }
             localArrows = new List<Arrow>();
             taskCountForImpostors = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForImpostors.getFloat());
@@ -625,7 +624,7 @@ namespace TheOtherRoles
         public static PlayerControl fakeSidekick;
         public static PlayerControl currentTarget;
         public static List<PlayerControl> formerJackals = new List<PlayerControl>();
-        
+
         public static float cooldown = 30f;
         public static float createSidekickCooldown = 30f;
         public static bool canUseVents = true;
@@ -663,7 +662,7 @@ namespace TheOtherRoles
             formerJackals.Clear();
             hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
         }
-        
+
     }
 
     public static class Sidekick {
@@ -696,7 +695,7 @@ namespace TheOtherRoles
         public static List<PlayerControl> futureErased = new List<PlayerControl>();
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
-        public static bool canEraseAnyone = false; 
+        public static bool canEraseAnyone = false;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -713,7 +712,7 @@ namespace TheOtherRoles
             canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
         }
     }
-    
+
     public static class Spy {
         public static PlayerControl spy;
         public static Color color = Palette.ImpostorRed;
@@ -923,7 +922,7 @@ namespace TheOtherRoles
         public static void clearAndReload() {
             arsonist = null;
             currentTarget = null;
-            douseTarget = null; 
+            douseTarget = null;
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
             foreach (PoolablePlayer p in MapOptions.playerIcons.Values) {
@@ -949,7 +948,7 @@ namespace TheOtherRoles
 
         public static void clearAndReload() {
             guesser = null;
-            
+
             remainingShots = Mathf.RoundToInt(CustomOptionHolder.guesserNumberOfShots.getFloat());
         }
     }

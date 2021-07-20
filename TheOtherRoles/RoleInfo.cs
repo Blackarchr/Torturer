@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using static TheOtherRoles.TheOtherRoles;
 using UnityEngine;
 
-namespace TheOtherRoles
-{
+namespace TheOtherRoles {
     class RoleInfo {
         public Color color;
         public string name;
@@ -24,7 +23,7 @@ namespace TheOtherRoles
 
         public static RoleInfo jester = new RoleInfo("Jester", Jester.color, "Get voted out", "Get voted out", RoleId.Jester);
         public static RoleInfo mayor = new RoleInfo("Mayor", Mayor.color, "Your vote counts twice", "Your vote counts twice", RoleId.Mayor);
-        public static RoleInfo engineer = new RoleInfo("Engineer",  Engineer.color, "Maintain important systems on the ship", "Repair the ship", RoleId.Engineer);
+        public static RoleInfo engineer = new RoleInfo("Engineer", Engineer.color, "Maintain important systems on the ship", "Repair the ship", RoleId.Engineer);
         public static RoleInfo sheriff = new RoleInfo("Sheriff", Sheriff.color, "Shoot the <color=#FF1919FF>Impostors</color>", "Shoot the Impostors", RoleId.Sheriff);
         public static RoleInfo lighter = new RoleInfo("Lighter", Lighter.color, "Your light never goes out", "Your light never goes out", RoleId.Lighter);
         public static RoleInfo godfather = new RoleInfo("Godfather", Godfather.color, "Kill all Crewmates", "Kill all Crewmates", RoleId.Godfather);
@@ -144,7 +143,7 @@ namespace TheOtherRoles
             if (infos.Count == 0 && !p.Data.IsImpostor) infos.Add(crewmate); // Just Crewmate
 
             // Modifier
-            if (p == Lovers.lover1|| p == Lovers.lover2) infos.Add(lover);
+            if (p == Lovers.lover1 || p == Lovers.lover2) infos.Add(lover);
 
             return infos;
         }

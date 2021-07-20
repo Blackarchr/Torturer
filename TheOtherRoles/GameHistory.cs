@@ -4,9 +4,8 @@ using System;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
-namespace TheOtherRoles{
-    public class DeadPlayer
-    {
+namespace TheOtherRoles {
+    public class DeadPlayer {
         public PlayerControl player;
         public DateTime timeOfDeath;
         public DeathReason deathReason;

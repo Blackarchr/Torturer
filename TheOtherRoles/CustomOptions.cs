@@ -11,8 +11,8 @@ using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles {
     public class CustomOptionHolder {
-        public static string[] rates = new string[]{"0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"};
-        public static string[] presets = new string[]{"Preset 1", "Preset 2", "Preset 3", "Preset 4", "Preset 5"};
+        public static string[] rates = new string[] { "0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%" };
+        public static string[] presets = new string[] { "Preset 1", "Preset 2", "Preset 3", "Preset 4", "Preset 5" };
 
         public static CustomOption presetSelection;
         public static CustomOption crewmateRolesCountMin;
@@ -147,7 +147,7 @@ namespace TheOtherRoles {
 
         public static CustomOption cleanerSpawnRate;
         public static CustomOption cleanerCooldown;
-        
+
         public static CustomOption warlockSpawnRate;
         public static CustomOption warlockCooldown;
         public static CustomOption warlockRootTime;
@@ -168,14 +168,14 @@ namespace TheOtherRoles {
         public static string cs(Color c, string s) {
             return string.Format("<color=#{0:X2}{1:X2}{2:X2}{3:X2}>{4}</color>", ToByte(c.r), ToByte(c.g), ToByte(c.b), ToByte(c.a), s);
         }
- 
+
         private static byte ToByte(float f) {
             f = Mathf.Clamp01(f);
             return (byte)(f * 255);
         }
 
         public static void Load() {
-            
+
             // Role Options
             presetSelection = CustomOption.Create(0, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Preset"), presets, null, true);
 
@@ -220,7 +220,7 @@ namespace TheOtherRoles {
             warlockRootTime = CustomOption.Create(272, "Warlock Root Time", 5f, 0f, 15f, 1f, warlockSpawnRate);
 
             bountyHunterSpawnRate = CustomOption.Create(320, cs(BountyHunter.color, "Bounty Hunter"), rates, null, true);
-            bountyHunterBountyDuration = CustomOption.Create(321, "Duration After Which Bounty Changes",  60f, 10f, 180f, 10f, bountyHunterSpawnRate);
+            bountyHunterBountyDuration = CustomOption.Create(321, "Duration After Which Bounty Changes", 60f, 10f, 180f, 10f, bountyHunterSpawnRate);
             bountyHunterReducedCooldown = CustomOption.Create(322, "Cooldown After Killing Bounty", 2.5f, 0f, 30f, 2.5f, bountyHunterSpawnRate);
             bountyHunterPunishmentTime = CustomOption.Create(323, "Additional Cooldown After Killing Others", 20f, 0f, 60f, 2.5f, bountyHunterSpawnRate);
             bountyHunterShowArrow = CustomOption.Create(324, "Show Arrow Pointing Towards The Bounty", true, bountyHunterSpawnRate);
@@ -278,7 +278,7 @@ namespace TheOtherRoles {
             lighterDuration = CustomOption.Create(114, "Lighter Duration", 5f, 2.5f, 60f, 2.5f, lighterSpawnRate);
 
             detectiveSpawnRate = CustomOption.Create(120, cs(Detective.color, "Detective"), rates, null, true);
-            detectiveAnonymousFootprints = CustomOption.Create(121, "Anonymous Footprints", false, detectiveSpawnRate); 
+            detectiveAnonymousFootprints = CustomOption.Create(121, "Anonymous Footprints", false, detectiveSpawnRate);
             detectiveFootprintIntervall = CustomOption.Create(122, "Footprint Intervall", 0.5f, 0.25f, 10f, 0.25f, detectiveSpawnRate);
             detectiveFootprintDuration = CustomOption.Create(123, "Footprint Duration", 5f, 0.25f, 10f, 0.25f, detectiveSpawnRate);
             detectiveReportNameDuration = CustomOption.Create(124, "Time Where Detective Reports Will Have Name", 0, 0, 60, 2.5f, detectiveSpawnRate);
@@ -290,7 +290,7 @@ namespace TheOtherRoles {
             timeMasterShieldDuration = CustomOption.Create(133, "Time Master Shield Duration", 3f, 1f, 20f, 1f, timeMasterSpawnRate);
 
             medicSpawnRate = CustomOption.Create(140, cs(Medic.color, "Medic"), rates, null, true);
-            medicShowShielded = CustomOption.Create(143, "Show Shielded Player", new string[] {"Everyone", "Shielded + Medic", "Medic"}, medicSpawnRate);
+            medicShowShielded = CustomOption.Create(143, "Show Shielded Player", new string[] { "Everyone", "Shielded + Medic", "Medic" }, medicSpawnRate);
             medicShowAttemptToShielded = CustomOption.Create(144, "Shielded Player Sees Murder Attempt", false, medicSpawnRate);
 
             swapperSpawnRate = CustomOption.Create(150, cs(Swapper.color, "Swapper"), rates, null, true);
@@ -298,10 +298,10 @@ namespace TheOtherRoles {
             swapperCanOnlySwapOthers = CustomOption.Create(152, "Swapper can only swap others", false, swapperSpawnRate);
 
             seerSpawnRate = CustomOption.Create(160, cs(Seer.color, "Seer"), rates, null, true);
-            seerMode = CustomOption.Create(161, "Seer Mode", new string[]{ "Show Death Flash + Souls", "Show Death Flash", "Show Souls"}, seerSpawnRate);
+            seerMode = CustomOption.Create(161, "Seer Mode", new string[] { "Show Death Flash + Souls", "Show Death Flash", "Show Souls" }, seerSpawnRate);
             seerLimitSoulDuration = CustomOption.Create(163, "Seer Limit Soul Duration", false, seerSpawnRate);
             seerSoulDuration = CustomOption.Create(162, "Seer Soul Duration", 15f, 0f, 60f, 5f, seerLimitSoulDuration);
-        
+
             hackerSpawnRate = CustomOption.Create(170, cs(Hacker.color, "Hacker"), rates, null, true);
             hackerCooldown = CustomOption.Create(171, "Hacker Cooldown", 30f, 0f, 60f, 5f, hackerSpawnRate);
             hackerHackeringDuration = CustomOption.Create(172, "Hacker Duration", 10f, 2.5f, 60f, 2.5f, hackerSpawnRate);
@@ -331,11 +331,11 @@ namespace TheOtherRoles {
             noVoteIsSelfVote = CustomOption.Create(5, "No Vote Is Self Vote", false, blockSkippingInEmergencyMeetings);
             hidePlayerNames = CustomOption.Create(6, "Hide Player Names", false);
 
-            blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
-            blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});
-            blockedRolePairings.Add((byte)RoleId.Spy, new [] { (byte)RoleId.Mini});
-            blockedRolePairings.Add((byte)RoleId.Mini, new [] { (byte)RoleId.Spy});
-            
+            blockedRolePairings.Add((byte)RoleId.Vampire, new[] { (byte)RoleId.Warlock });
+            blockedRolePairings.Add((byte)RoleId.Warlock, new[] { (byte)RoleId.Vampire });
+            blockedRolePairings.Add((byte)RoleId.Spy, new[] { (byte)RoleId.Mini });
+            blockedRolePairings.Add((byte)RoleId.Mini, new[] { (byte)RoleId.Spy });
+
         }
     }
 
@@ -356,7 +356,7 @@ namespace TheOtherRoles {
 
         // Option creation
 
-        public CustomOption(int id, string name,  System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader) {
+        public CustomOption(int id, string name, System.Object[] selections, System.Object defaultValue, CustomOption parent, bool isHeader) {
             this.id = id;
             this.name = parent == null ? name : "- " + name;
             this.selections = selections;
@@ -384,7 +384,7 @@ namespace TheOtherRoles {
         }
 
         public static CustomOption Create(int id, string name, bool defaultValue, CustomOption parent = null, bool isHeader = false) {
-            return new CustomOption(id, name, new string[]{"Off", "On"}, defaultValue ? "On" : "Off", parent, isHeader);
+            return new CustomOption(id, name, new string[] { "Off", "On" }, defaultValue ? "On" : "Off", parent, isHeader);
         }
 
         // Static behaviour
@@ -441,7 +441,7 @@ namespace TheOtherRoles {
 
                     ShareOptionSelections();// Share all selections
                 }
-           }
+            }
         }
     }
 
@@ -458,7 +458,7 @@ namespace TheOtherRoles {
                     StringOption stringOption = UnityEngine.Object.Instantiate(template, template.transform.parent);
                     allOptions.Add(stringOption);
 
-                    stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => {});
+                    stringOption.OnValueChanged = new Action<OptionBehaviour>((o) => { });
                     stringOption.TitleText.text = option.name;
                     stringOption.Value = stringOption.oldValue = option.selection;
                     stringOption.ValueText.text = option.selections[option.selection].ToString();
@@ -467,16 +467,16 @@ namespace TheOtherRoles {
                 }
                 option.optionBehaviour.gameObject.SetActive(true);
             }
-            
+
             var commonTasksOption = allOptions.FirstOrDefault(x => x.name == "NumCommonTasks").TryCast<NumberOption>();
-            if(commonTasksOption != null) commonTasksOption.ValidRange = new FloatRange(0f, 4f);
+            if (commonTasksOption != null) commonTasksOption.ValidRange = new FloatRange(0f, 4f);
 
             var shortTasksOption = allOptions.FirstOrDefault(x => x.name == "NumShortTasks").TryCast<NumberOption>();
-            if(shortTasksOption != null) shortTasksOption.ValidRange = new FloatRange(0f, 23f);
+            if (shortTasksOption != null) shortTasksOption.ValidRange = new FloatRange(0f, 23f);
 
             var longTasksOption = allOptions.FirstOrDefault(x => x.name == "NumLongTasks").TryCast<NumberOption>();
-            if(longTasksOption != null) longTasksOption.ValidRange = new FloatRange(0f, 15f);
-            
+            if (longTasksOption != null) longTasksOption.ValidRange = new FloatRange(0f, 15f);
+
             __instance.Children = allOptions.ToArray();
         }
     }
@@ -487,20 +487,18 @@ namespace TheOtherRoles {
             CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
             if (option == null) return true;
 
-            __instance.OnValueChanged = new Action<OptionBehaviour>((o) => {});
+            __instance.OnValueChanged = new Action<OptionBehaviour>((o) => { });
             __instance.TitleText.text = option.name;
             __instance.Value = __instance.oldValue = option.selection;
             __instance.ValueText.text = option.selections[option.selection].ToString();
-            
+
             return false;
         }
     }
 
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.Increase))]
-    public class StringOptionIncreasePatch
-    {
-        public static bool Prefix(StringOption __instance)
-        {
+    public class StringOptionIncreasePatch {
+        public static bool Prefix(StringOption __instance) {
             CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
             if (option == null) return true;
             option.updateSelection(option.selection + 1);
@@ -509,10 +507,8 @@ namespace TheOtherRoles {
     }
 
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.Decrease))]
-    public class StringOptionDecreasePatch
-    {
-        public static bool Prefix(StringOption __instance)
-        {
+    public class StringOptionDecreasePatch {
+        public static bool Prefix(StringOption __instance) {
             CustomOption option = CustomOption.options.FirstOrDefault(option => option.optionBehaviour == __instance);
             if (option == null) return true;
             option.updateSelection(option.selection - 1);
@@ -521,21 +517,18 @@ namespace TheOtherRoles {
     }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSyncSettings))]
-    public class RpcSyncSettingsPatch
-    {
-        public static void Postfix()
-        {
+    public class RpcSyncSettingsPatch {
+        public static void Postfix() {
             CustomOption.ShareOptionSelections();
         }
     }
 
 
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
-    class GameOptionsMenuUpdatePatch
-    {
+    class GameOptionsMenuUpdatePatch {
         private static float timer = 1f;
         public static void Postfix(GameOptionsMenu __instance) {
-            __instance.GetComponentInParent<Scroller>().YBounds.max = -0.5F + __instance.Children.Length * 0.55F; 
+            __instance.GetComponentInParent<Scroller>().YBounds.max = -0.5F + __instance.Children.Length * 0.55F;
             timer += Time.deltaTime;
             if (timer < 0.1f) return;
             timer = 0f;
@@ -562,7 +555,7 @@ namespace TheOtherRoles {
     [HarmonyPatch(typeof(GameSettingMenu), "OnEnable")]
     class GameSettingMenuPatch {
         public static void Prefix(GameSettingMenu __instance) {
-            __instance.HideForOnline = new Transform[]{};
+            __instance.HideForOnline = new Transform[] { };
         }
 
         public static void Postfix(GameSettingMenu __instance) {
@@ -589,15 +582,13 @@ namespace TheOtherRoles {
         }
     }
 
-    [HarmonyPatch] 
-    class GameOptionsDataPatch
-    {
+    [HarmonyPatch]
+    class GameOptionsDataPatch {
         private static IEnumerable<MethodBase> TargetMethods() {
             return typeof(GameOptionsData).GetMethods().Where(x => x.ReturnType == typeof(string) && x.GetParameters().Length == 1 && x.GetParameters()[0].ParameterType == typeof(int));
         }
 
-        private static void Postfix(ref string __result)
-        {
+        private static void Postfix(ref string __result) {
             StringBuilder sb = new StringBuilder(__result);
             foreach (CustomOption option in CustomOption.options) {
                 if (option.parent == null) {
@@ -608,26 +599,30 @@ namespace TheOtherRoles {
                         if (min > max) min = max;
                         var optionValue = (min == max) ? $"{max}" : $"{min} - {max}";
                         sb.AppendLine($"{optionName}: {optionValue}");
-                    } else if (option == CustomOptionHolder.neutralRolesCountMin) {
+                    }
+                    else if (option == CustomOptionHolder.neutralRolesCountMin) {
                         var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Neutral Roles");
                         var min = CustomOptionHolder.neutralRolesCountMin.getSelection();
                         var max = CustomOptionHolder.neutralRolesCountMax.getSelection();
                         if (min > max) min = max;
                         var optionValue = (min == max) ? $"{max}" : $"{min} - {max}";
                         sb.AppendLine($"{optionName}: {optionValue}");
-                    } else if (option == CustomOptionHolder.impostorRolesCountMin) {
+                    }
+                    else if (option == CustomOptionHolder.impostorRolesCountMin) {
                         var optionName = CustomOptionHolder.cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Impostor Roles");
                         var min = CustomOptionHolder.impostorRolesCountMin.getSelection();
                         var max = CustomOptionHolder.impostorRolesCountMax.getSelection();
                         if (min > max) min = max;
                         var optionValue = (min == max) ? $"{max}" : $"{min} - {max}";
                         sb.AppendLine($"{optionName}: {optionValue}");
-                    } else if ((option == CustomOptionHolder.crewmateRolesCountMax) || (option == CustomOptionHolder.neutralRolesCountMax) || (option == CustomOptionHolder.impostorRolesCountMax)) {
+                    }
+                    else if ((option == CustomOptionHolder.crewmateRolesCountMax) || (option == CustomOptionHolder.neutralRolesCountMax) || (option == CustomOptionHolder.impostorRolesCountMax)) {
                         continue;
-                    } else {
+                    }
+                    else {
                         sb.AppendLine($"{option.name}: {option.selections[option.selection].ToString()}");
                     }
-                    
+
                 }
             }
             CustomOption parent = null;
@@ -652,8 +647,9 @@ namespace TheOtherRoles {
             int end4 = hudString.TakeWhile(c => (detailedSettingsP2 -= (c == '\n' ? 1 : 0)) > 0).Count();
             int counter = TheOtherRolesPlugin.optionsPage;
             if (counter == 0) {
-                hudString = hudString.Substring(0, end1) + "\n";   
-            } else if (counter == 1) {
+                hudString = hudString.Substring(0, end1) + "\n";
+            }
+            else if (counter == 1) {
                 hudString = hudString.Substring(end1 + 1, end2 - end1);
                 // Temporary fix, should add a new CustomOption for spaces
                 int gap = 1;
@@ -668,35 +664,36 @@ namespace TheOtherRoles {
                 gap = 22;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-            } else if (counter == 2) {
+            }
+            else if (counter == 2) {
                 hudString = hudString.Substring(end2 + 1, end3 - end2);
-            } else if (counter == 3) {
+            }
+            else if (counter == 3) {
                 hudString = hudString.Substring(end3 + 1, end4 - end3);
-            } else if (counter == 4) {
+            }
+            else if (counter == 4) {
                 hudString = hudString.Substring(end4 + 1);
             }
 
-            hudString += $"\n Press tab for more... ({counter+1}/5)";
+            hudString += $"\n Press tab for more... ({counter + 1}/5)";
             __result = hudString;
         }
     }
 
     [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
-    public static class GameOptionsNextPagePatch
-    {
-        public static void Postfix(KeyboardJoystick __instance)
-        {
-            if(Input.GetKeyDown(KeyCode.Tab)) {
+    public static class GameOptionsNextPagePatch {
+        public static void Postfix(KeyboardJoystick __instance) {
+            if (Input.GetKeyDown(KeyCode.Tab)) {
                 TheOtherRolesPlugin.optionsPage = (TheOtherRolesPlugin.optionsPage + 1) % 5;
             }
         }
     }
 
-    
+
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class GameSettingsScalePatch {
         public static void Prefix(HudManager __instance) {
-            if (__instance.GameSettings != null) __instance.GameSettings.fontSize = 1.2f; 
+            if (__instance.GameSettings != null) __instance.GameSettings.fontSize = 1.2f;
         }
     }
 }
