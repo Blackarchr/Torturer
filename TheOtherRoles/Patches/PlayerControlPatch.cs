@@ -7,9 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.GameHistory;
+using TheOtherRoles.Objects;
 using UnityEngine;
 
-namespace TheOtherRoles {
+namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public static class PlayerControlFixedUpdatePatch
     {
@@ -516,6 +517,11 @@ namespace TheOtherRoles {
             }
         }
 
+        static void torturerSetTarget() {
+            if (Torturer.torturer == null || Torturer.torturer != PlayerControl.LocalPlayer) return;
+            if (Torturer.torturedPlayer == null) Torturer.currentTarget = setTarget();
+        }
+
         public static void Postfix(PlayerControl __instance) {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
 
@@ -573,6 +579,8 @@ namespace TheOtherRoles {
                 snitchUpdate();
                 // BountyHunter
                 bountyHunterUpdate();
+                // Torturer
+                torturerSetTarget();
             } 
         }
     }

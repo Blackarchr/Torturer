@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TheOtherRoles {
+namespace TheOtherRoles.Patches {
     [Harmony]
     public class AccountManagerPatch {
         [HarmonyPatch(typeof(AccountManager), nameof(AccountManager.RandomizeName))]

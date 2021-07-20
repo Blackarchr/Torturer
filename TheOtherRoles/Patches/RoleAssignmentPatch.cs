@@ -7,8 +7,7 @@ using UnityEngine;
 using System;
 using static TheOtherRoles.TheOtherRoles;
 
-namespace TheOtherRoles
-{
+namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSetInfected))]
     class SetInfectedPatch
     {
@@ -73,6 +72,7 @@ namespace TheOtherRoles
             impSettings.Add((byte)RoleId.Cleaner, CustomOptionHolder.cleanerSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Warlock, CustomOptionHolder.warlockSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.BountyHunter, CustomOptionHolder.bountyHunterSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Torturer, CustomOptionHolder.torturerSpawnRate.getSelection());
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Arsonist, CustomOptionHolder.arsonistSpawnRate.getSelection());
