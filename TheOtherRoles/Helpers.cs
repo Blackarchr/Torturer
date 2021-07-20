@@ -7,6 +7,7 @@ using UnhollowerBaseLib;
 using UnityEngine;
 using System.Linq;
 using static TheOtherRoles.TheOtherRoles;
+using TheOtherRoles.Modules;
 using HarmonyLib;
 using Hazel;
 
@@ -125,6 +126,20 @@ namespace TheOtherRoles {
             return true;
         }
 
+        public static void handleVampireBiteOnBodyReport() {
+            // Murder the bitten player before the meeting starts or reset the bitten player
+            if (Vampire.bitten != null && !Vampire.bitten.Data.IsDead && Helpers.handleMurderAttempt(Vampire.bitten, true)) {
+                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireTryKill, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                RPCProcedure.vampireTryKill();
+            } else {
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
+                writer.Write(byte.MaxValue);
+                writer.Write(byte.MaxValue);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
+            }
+        }
 
         public static void refreshRoleDescription(PlayerControl player) {
             if (player == null) return;
@@ -201,6 +216,10 @@ namespace TheOtherRoles {
             foreach (SpriteRenderer r in player.gameObject.GetComponentsInChildren<SpriteRenderer>())
                 r.color = new Color(r.color.r, r.color.g, r.color.b, alpha);
             player.NameText.color = new Color(player.NameText.color.r, player.NameText.color.g, player.NameText.color.b, alpha);
+        }
+
+        public static string GetString(this TranslationController t, StringNames key, params Il2CppSystem.Object[] parts) {
+            return t.GetString(key, parts);
         }
 
         public static string cs(Color c, string s) {

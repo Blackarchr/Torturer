@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnhollowerBaseLib;
 using static TheOtherRoles.TheOtherRoles;
+using TheOtherRoles.Objects;
 using static TheOtherRoles.MapOptions;
 using System.Collections;
 using System;
@@ -11,10 +12,18 @@ using System.Text;
 using UnityEngine;
 using System.Reflection;
 
-namespace TheOtherRoles {
+namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(ExileController), "Begin")]
     class ExileControllerBeginPatch {
         public static void Prefix(ExileController __instance, [HarmonyArgument(0)]ref GameData.PlayerInfo exiled, [HarmonyArgument(1)]bool tie) {
+            // Medic shield
+            if (Medic.medic != null && AmongUsClient.Instance.AmHost && Medic.futureShielded != null && !Medic.medic.Data.IsDead) { // We need to send the RPC from the host here, to make sure that the order of shifting and setting the shield is correct(for that reason the futureShifted and futureShielded are being synced)
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MedicSetShielded, Hazel.SendOption.Reliable, -1);
+                writer.Write(Medic.futureShielded.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.medicSetShielded(Medic.futureShielded.PlayerId);
+            }
+
             // Shifter shift
             if (Shifter.shifter != null && AmongUsClient.Instance.AmHost && Shifter.futureShift != null) { // We need to send the RPC from the host here, to make sure that the order of shifting and erasing is correct (for that reason the futureShifted and futureErased are being synced)
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShifterShift, Hazel.SendOption.Reliable, -1);
@@ -147,18 +156,22 @@ namespace TheOtherRoles {
 
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new Type[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
     class ExileControllerMessagePatch {
-        static void Postfix(ref string __result, [HarmonyArgument(0)]StringNames id, [HarmonyArgument(1)]Il2CppReferenceArray<Il2CppSystem.Object> parts) {
-            if (ExileController.Instance != null && ExileController.Instance.exiled != null) {
-                PlayerControl player = Helpers.playerById(ExileController.Instance.exiled.Object.PlayerId);
-                if (player == null) return;
-                // Exile role text
-                if (id == StringNames.ExileTextPN || id == StringNames.ExileTextSN || id == StringNames.ExileTextPP || id == StringNames.ExileTextSP) {
-                    __result = player.Data.PlayerName + " was The " + String.Join(" ", RoleInfo.getRoleInfoForPlayer(player).Select(x => x.name).ToArray());
+        static void Postfix(ref string __result, [HarmonyArgument(0)]StringNames id) {
+            try {
+                if (ExileController.Instance != null && ExileController.Instance.exiled != null) {
+                    PlayerControl player = Helpers.playerById(ExileController.Instance.exiled.Object.PlayerId);
+                    if (player == null) return;
+                    // Exile role text
+                    if (id == StringNames.ExileTextPN || id == StringNames.ExileTextSN || id == StringNames.ExileTextPP || id == StringNames.ExileTextSP) {
+                        __result = player.Data.PlayerName + " was The " + String.Join(" ", RoleInfo.getRoleInfoForPlayer(player).Select(x => x.name).ToArray());
+                    }
+                    // Hide number of remaining impostors on Jester win
+                    if (id == StringNames.ImpostorsRemainP || id == StringNames.ImpostorsRemainS) {
+                        if (Jester.jester != null && player.PlayerId == Jester.jester.PlayerId) __result = "";
+                    }
                 }
-                // Hide number of remaining impostors on Jester win
-                if (id == StringNames.ImpostorsRemainP || id == StringNames.ImpostorsRemainS) {
-                    if (Jester.jester != null && player.PlayerId == Jester.jester.PlayerId) __result = "";
-                }
+            } catch {
+                // pass - Hopefully prevent leaving while exiling to softlock game
             }
         }
     }

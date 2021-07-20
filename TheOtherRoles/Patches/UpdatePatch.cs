@@ -4,11 +4,11 @@ using System.IO;
 using System.Net.Http;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
+using TheOtherRoles.Objects;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TheOtherRoles
-{
+namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     class HudManagerUpdatePatch
     {
@@ -116,6 +116,8 @@ namespace TheOtherRoles
                 setPlayerNameColor(Arsonist.arsonist, Arsonist.color);
             } else if (Guesser.guesser != null && Guesser.guesser == PlayerControl.LocalPlayer) {
                 setPlayerNameColor(Guesser.guesser, Guesser.guesser.Data.IsImpostor ? Palette.ImpostorRed : Guesser.color);
+            } else if (Bait.bait != null && Bait.bait == PlayerControl.LocalPlayer) {
+                setPlayerNameColor(Bait.bait, Bait.color);
             }
 
             // No else if here, as a Lover of team Jackal needs the colors
@@ -158,7 +160,7 @@ namespace TheOtherRoles
 
             // Lovers
             if (Lovers.lover1 != null && Lovers.lover2 != null && (Lovers.lover1 == PlayerControl.LocalPlayer || Lovers.lover2 == PlayerControl.LocalPlayer)) {
-                string suffix = Helpers.cs(Lovers.color, " ❤");
+                string suffix = Helpers.cs(Lovers.color, " ♥");
                 Lovers.lover1.nameText.text += suffix;
                 Lovers.lover2.nameText.text += suffix;
 
