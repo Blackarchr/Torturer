@@ -46,6 +46,7 @@ namespace TheOtherRoles {
         Arsonist,
         Guesser,
         BountyHunter,
+        TheBait,
         Crewmate,
         Impostor
     }
@@ -60,6 +61,7 @@ namespace TheOtherRoles {
         VersionHandshake,
         UseUncheckedVent,
         UncheckedMurderPlayer,
+        UncheckedReportPlayer,
         // Role functionality
 
         EngineerFixLights = 81,
@@ -67,6 +69,7 @@ namespace TheOtherRoles {
         CleanBody,
         SheriffKill,
         MedicSetShielded,
+        SetFutureShielded,
         ShieldedMurderAttempt,
         TimeMasterShield,
         TimeMasterRewindTime,
@@ -226,6 +229,9 @@ namespace TheOtherRoles {
                         case RoleId.BountyHunter:
                             BountyHunter.bountyHunter = player;
                             break;
+                        case RoleId.TheBait:
+                            TheBait.theBait = player;
+                            break;
                     }
                 }
         }
@@ -259,6 +265,12 @@ namespace TheOtherRoles {
             PlayerControl source = Helpers.playerById(sourceId);
             PlayerControl target = Helpers.playerById(targetId);
             if (source != null && target != null) source.MurderPlayer(target);
+        }
+
+        public static void uncheckedReportPlayer(byte sourceId, byte targetId) {
+            PlayerControl source = Helpers.playerById(sourceId);
+            PlayerControl target = Helpers.playerById(targetId);
+            if (source != null && target != null) source.ReportDeadBody(target.Data);
         }
 
         // Role functionality
@@ -319,10 +331,17 @@ namespace TheOtherRoles {
         }
 
         public static void medicSetShielded(byte shieldedId) {
-            Medic.usedShield = true;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == shieldedId)
                     Medic.shielded = player;
+            Medic.futureShielded = null;
+        }
+
+        public static void setFutureShielded(byte playerId) {
+            if (Medic.setShieldAfterMeeting) Medic.futureShielded = Helpers.playerById(playerId);
+            else medicSetShielded(playerId);
+
+            Medic.usedShield = true;
         }
 
         public static void shieldedMurderAttempt() {
@@ -407,6 +426,8 @@ namespace TheOtherRoles {
                 SecurityGuard.securityGuard = oldShifter;
             if (Guesser.guesser != null && Guesser.guesser == player)
                 Guesser.guesser = oldShifter;
+            if (TheBait.theBait != null && TheBait.theBait == player)
+                TheBait.theBait = oldShifter;
 
             // Set cooldowns to max for both players
             if (PlayerControl.LocalPlayer == oldShifter || PlayerControl.LocalPlayer == player)
@@ -533,6 +554,7 @@ namespace TheOtherRoles {
             if (player == Swapper.swapper) Swapper.clearAndReload();
             if (player == Spy.spy) Spy.clearAndReload();
             if (player == SecurityGuard.securityGuard) SecurityGuard.clearAndReload();
+            if (player == TheBait.theBait) TheBait.clearAndReload();
 
             // Impostor roles
             if (player == Morphling.morphling) Morphling.clearAndReload();
@@ -730,6 +752,11 @@ namespace TheOtherRoles {
                     byte source = reader.ReadByte();
                     byte target = reader.ReadByte();
                     RPCProcedure.uncheckedMurderPlayer(source, target);
+                    break;
+                case (byte)CustomRPC.UncheckedReportPlayer:
+                    byte reportSource = reader.ReadByte();
+                    byte reportTarget = reader.ReadByte();
+                    RPCProcedure.uncheckedReportPlayer(reportSource, reportTarget);
                     break;
 
                 // Role functionality
