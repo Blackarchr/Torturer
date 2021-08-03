@@ -51,6 +51,7 @@ namespace TheOtherRoles {
             Arsonist.clearAndReload();
             Guesser.clearAndReload();
             BountyHunter.clearAndReload();
+            TheBait.clearAndReload();
             Torturer.clearAndReload();
         }
 
@@ -238,11 +239,13 @@ namespace TheOtherRoles {
     public static class Medic {
         public static PlayerControl medic;
         public static PlayerControl shielded;
+        public static PlayerControl futureShielded;
         public static Color color = new Color32(126, 251, 194, byte.MaxValue);
         public static bool usedShield;
 
         public static int showShielded = 0;
         public static bool showAttemptToShielded = false;
+        public static bool setShieldAfterMeeting = false;
 
         public static Color shieldedColor = new Color32(0, 221, 255, byte.MaxValue);
         public static PlayerControl currentTarget;
@@ -258,9 +261,11 @@ namespace TheOtherRoles {
             medic = null;
             shielded = null;
             currentTarget = null;
+            futureShielded = null;
             usedShield = false;
             showShielded = CustomOptionHolder.medicShowShielded.getSelection();
             showAttemptToShielded = CustomOptionHolder.medicShowAttemptToShielded.getBool();
+            setShieldAfterMeeting = CustomOptionHolder.medicSetShieldAfterMeeting.getBool();
         }
     }
 
@@ -606,7 +611,8 @@ namespace TheOtherRoles {
 
         public static List<Arrow> localArrows = new List<Arrow>();
         public static int taskCountForImpostors = 1;
-
+        public static bool includeTeamJackal = false;
+        public static bool teamJackalDifferentArrowColor = true;
         public static void clearAndReload() {
             if (localArrows != null) {
                 foreach (Arrow arrow in localArrows)
@@ -615,6 +621,8 @@ namespace TheOtherRoles {
             }
             localArrows = new List<Arrow>();
             taskCountForImpostors = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForImpostors.getFloat());
+            includeTeamJackal = CustomOptionHolder.includeTeamJackal.getBool();
+            teamJackalDifferentArrowColor = CustomOptionHolder.teamJackalDifferentArrowColor.getBool();
             snitch = null;
         }
     }
@@ -990,6 +998,20 @@ namespace TheOtherRoles {
             punishmentTime = CustomOptionHolder.bountyHunterPunishmentTime.getFloat();
             showArrow = CustomOptionHolder.bountyHunterShowArrow.getBool();
             arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat();
+        }
+    }
+    public static class TheBait {
+        public static PlayerControl theBait;
+        public static Color color = new Color32(0, 247, 255, byte.MaxValue);
+        public static List<Vent> usedVents = new List<Vent>();
+        public static bool reported = false;
+        public static bool showAllVents = false;
+
+        public static void clearAndReload() {
+            theBait = null;
+            usedVents = new List<Vent>();
+            reported = false;
+            showAllVents = CustomOptionHolder.theBaitAllVents.getBool();
         }
     }
 

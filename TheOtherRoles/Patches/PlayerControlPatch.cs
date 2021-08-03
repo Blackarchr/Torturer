@@ -435,8 +435,7 @@ namespace TheOtherRoles.Patches {
             var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
             int numberOfTasks = playerTotal - playerCompleted;
 
-            if (PlayerControl.LocalPlayer.Data.IsImpostor && numberOfTasks <= Snitch.taskCountForImpostors)
-            {
+            if (numberOfTasks <= Snitch.taskCountForImpostors && (PlayerControl.LocalPlayer.Data.IsImpostor || Snitch.includeTeamJackal && (PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Sidekick.sidekick))) {
                 if (Snitch.localArrows.Count == 0) Snitch.localArrows.Add(new Arrow(Color.blue));
                 if (Snitch.localArrows.Count != 0 && Snitch.localArrows[0] != null)
                 {
@@ -517,6 +516,60 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void theBaitUpdate() {
+            if (TheBait.theBait == null) return;
+
+            if (TheBait.theBait.Data.IsDead && !TheBait.reported) {
+                DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == TheBait.theBait.PlayerId)?.FirstOrDefault();
+                if (deadPlayer.killerIfExisting != null) {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedReportPlayer, Hazel.SendOption.Reliable, -1);
+                    writer.Write(deadPlayer.killerIfExisting.PlayerId);
+                    writer.Write(TheBait.theBait.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.uncheckedReportPlayer(deadPlayer.killerIfExisting.PlayerId, TheBait.theBait.PlayerId);
+
+                }
+                TheBait.reported = true;
+            }
+
+            if (PlayerControl.LocalPlayer == TheBait.theBait && ShipStatus.Instance?.AllVents != null) {
+                TheBait.usedVents = new List<Vent>();
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls) {
+                    if (!player.inVent) continue;
+                    Vent target = null;
+                    Vector2 truePosition = player.GetTruePosition();
+                    float closestDistance = float.MaxValue;
+                    for (int i = 0; i < ShipStatus.Instance.AllVents.Length; i++) {
+                        Vent vent = ShipStatus.Instance.AllVents[i];
+                        float distance = Vector2.Distance(vent.transform.position, truePosition);
+                        if (distance <= vent.UsableDistance && distance < closestDistance) {
+                            closestDistance = distance;
+                            target = vent;
+                        }
+                    }
+                    if (!TheBait.usedVents.Contains(target)) TheBait.usedVents.Add(target);
+                }
+
+                for (int i = 0; i < ShipStatus.Instance.AllVents.Length; i++) {
+                    Vent vent = ShipStatus.Instance.AllVents[i];
+                    if (!TheBait.usedVents.Contains(vent) && vent?.myRend?.material != null) {
+                        vent.myRend.material.SetFloat("_Outline", 0);
+                        if (TheBait.showAllVents && TheBait.usedVents.Count > 0) {
+                            vent.myRend.material.SetFloat("_Outline", 1f);
+                            vent.myRend.material.SetColor("_OutlineColor", Color.yellow);
+                        }
+                    }
+
+                }
+
+                foreach (Vent vent in TheBait.usedVents) {
+                    if (vent?.myRend?.material != null) {
+                        vent.myRend.material.SetFloat("_Outline", 1f);
+                        vent.myRend.material.SetColor("_OutlineColor", TheBait.color);
+                    }
+                }
+            }
+        }
         static void torturerSetTarget() {
             if (Torturer.torturer == null || Torturer.torturer != PlayerControl.LocalPlayer) return;
             if (Torturer.torturedPlayer == null) Torturer.currentTarget = setTarget();
@@ -579,6 +632,8 @@ namespace TheOtherRoles.Patches {
                 snitchUpdate();
                 // BountyHunter
                 bountyHunterUpdate();
+                // The Bait
+                theBaitUpdate();
                 // Torturer
                 torturerSetTarget();
             } 

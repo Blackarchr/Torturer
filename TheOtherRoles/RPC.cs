@@ -48,6 +48,7 @@ namespace TheOtherRoles {
         Guesser,
         BountyHunter,
         Torturer,
+        TheBait,
         Crewmate,
         Impostor
     }
@@ -67,6 +68,7 @@ namespace TheOtherRoles {
         Tracker,
         Snitch,
         Security_Guard,
+        TheBait,
         Crewmate
     }
 
@@ -87,6 +89,7 @@ namespace TheOtherRoles {
         VersionHandshake,
         UseUncheckedVent,
         UncheckedMurderPlayer,
+        UncheckedReportPlayer,
         // Role functionality
 
         EngineerFixLights = 81,
@@ -94,6 +97,7 @@ namespace TheOtherRoles {
         CleanBody,
         SheriffKill,
         MedicSetShielded,
+        SetFutureShielded,
         ShieldedMurderAttempt,
         TimeMasterShield,
         TimeMasterRewindTime,
@@ -257,6 +261,9 @@ namespace TheOtherRoles {
                         case RoleId.Torturer:
                             Torturer.torturer = player;
                             break;
+                        case RoleId.TheBait:
+                            TheBait.theBait = player;
+                            break;
                     }
                 }
         }
@@ -293,6 +300,11 @@ namespace TheOtherRoles {
         }
 
         // Role functionality
+        public static void uncheckedReportPlayer(byte sourceId, byte targetId) {
+            PlayerControl source = Helpers.playerById(sourceId);
+            PlayerControl target = Helpers.playerById(targetId);
+            if (source != null && target != null) source.ReportDeadBody(target.Data);
+        }
 
         public static void engineerFixLights() {
             SwitchSystem switchSystem = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
@@ -354,9 +366,17 @@ namespace TheOtherRoles {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == shieldedId)
                     Medic.shielded = player;
+            Medic.futureShielded = null;
         }
 
-        public static void shieldedMurderAttempt() {
+        public static void setFutureShielded(byte playerId) {
+            if (Medic.setShieldAfterMeeting) Medic.futureShielded = Helpers.playerById(playerId);
+            else medicSetShielded(playerId);
+
+            Medic.usedShield = true;
+        }
+
+            public static void shieldedMurderAttempt() {
             if (Medic.shielded != null && Medic.shielded == PlayerControl.LocalPlayer && Medic.showAttemptToShielded && HudManager.Instance?.FullScreen != null) {
                 HudManager.Instance.FullScreen.enabled = true;
                 HudManager.Instance.StartCoroutine(Effects.Lerp(0.5f, new Action<float>((p) => {
@@ -436,6 +456,8 @@ namespace TheOtherRoles {
                 SecurityGuard.securityGuard = oldShifter;
             if (Guesser.guesser != null && Guesser.guesser == player)
                 Guesser.guesser = oldShifter;
+            if (TheBait.theBait != null && TheBait.theBait == player)
+                TheBait.theBait = oldShifter;
 
             // Set cooldowns to max for both players
             if (PlayerControl.LocalPlayer == oldShifter || PlayerControl.LocalPlayer == player)
@@ -563,6 +585,7 @@ namespace TheOtherRoles {
             if (player == Swapper.swapper) Swapper.clearAndReload();
             if (player == Spy.spy) Spy.clearAndReload();
             if (player == SecurityGuard.securityGuard) SecurityGuard.clearAndReload();
+            if (player == TheBait.theBait) TheBait.clearAndReload();
 
             // Impostor roles
             if (player == Morphling.morphling) Morphling.clearAndReload();
@@ -713,7 +736,7 @@ namespace TheOtherRoles {
                 HudManager.Instance.FullScreen.color = new Color(0.25f, 0.24f, 0.23f, 1f);
                 HudManager.Instance.FullScreen.enabled = true;
                 HudManager.Instance.StartCoroutine(Effects.Lerp(Torturer.duration, new Action<float>((p) => {
-                    if (p == 1f) {
+                    if (p == 1f || MeetingHud.Instance != null) {
                         HudManager.Instance.FullScreen.enabled = false;
                         PlayerControl.LocalPlayer.moveable = true;
                     }
@@ -776,6 +799,11 @@ class RPCHandlerPatch {
                 byte source = reader.ReadByte();
                 byte target = reader.ReadByte();
                 RPCProcedure.uncheckedMurderPlayer(source, target);
+                break;
+            case (byte)CustomRPC.UncheckedReportPlayer:
+                byte reportSource = reader.ReadByte();
+                byte reportTarget = reader.ReadByte();
+                RPCProcedure.uncheckedReportPlayer(reportSource, reportTarget);
                 break;
 
             // Role functionality

@@ -117,6 +117,7 @@ namespace TheOtherRoles {
         public static CustomOption medicSpawnRate;
         public static CustomOption medicShowShielded;
         public static CustomOption medicShowAttemptToShielded;
+        public static CustomOption medicSetShieldAfterMeeting;
 
         public static CustomOption swapperSpawnRate;
         public static CustomOption swapperCanCallEmergency;
@@ -137,6 +138,8 @@ namespace TheOtherRoles {
 
         public static CustomOption snitchSpawnRate;
         public static CustomOption snitchLeftTasksForImpostors;
+        public static CustomOption includeTeamJackal;
+        public static CustomOption teamJackalDifferentArrowColor;
 
         public static CustomOption spySpawnRate;
         public static CustomOption spyCanDieToSheriff;
@@ -161,6 +164,9 @@ namespace TheOtherRoles {
         public static CustomOption securityGuardTotalScrews;
         public static CustomOption securityGuardCamPrice;
         public static CustomOption securityGuardVentPrice;
+
+        public static CustomOption theBaitSpawnRate;
+        public static CustomOption theBaitAllVents;
 
         public static CustomOption maxNumberOfMeetings;
         public static CustomOption blockSkippingInEmergencyMeetings;
@@ -299,6 +305,7 @@ namespace TheOtherRoles {
             medicSpawnRate = CustomOption.Create(140, cs(Medic.color, "Medic"), rates, null, true);
             medicShowShielded = CustomOption.Create(143, "Show Shielded Player", new string[] { "Everyone", "Shielded + Medic", "Medic" }, medicSpawnRate);
             medicShowAttemptToShielded = CustomOption.Create(144, "Shielded Player Sees Murder Attempt", false, medicSpawnRate);
+            medicSetShieldAfterMeeting = CustomOption.Create(145, "Shield Will Be Set After Next Meeting", false, medicSpawnRate);
 
             swapperSpawnRate = CustomOption.Create(150, cs(Swapper.color, "Swapper"), rates, null, true);
             swapperCanCallEmergency = CustomOption.Create(151, "Swapper can call emergency meeting", false, swapperSpawnRate);
@@ -319,6 +326,8 @@ namespace TheOtherRoles {
 
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "Snitch"), rates, null, true);
             snitchLeftTasksForImpostors = CustomOption.Create(211, "Task Count Where Impostors See Snitch", 1f, 0f, 5f, 1f, snitchSpawnRate);
+            includeTeamJackal = CustomOption.Create(212, "Include Jackal Team", false, snitchSpawnRate);
+            teamJackalDifferentArrowColor = CustomOption.Create(213, "Different Jackal Arrow Color", true, includeTeamJackal);
 
             spySpawnRate = CustomOption.Create(240, cs(Spy.color, "Spy"), rates, null, true);
             spyCanDieToSheriff = CustomOption.Create(241, "Spy Can Die To Sheriff", false, spySpawnRate);
@@ -331,6 +340,9 @@ namespace TheOtherRoles {
             securityGuardTotalScrews = CustomOption.Create(282, "Security Guard Number Of Screws", 7f, 1f, 15f, 1f, securityGuardSpawnRate);
             securityGuardCamPrice = CustomOption.Create(283, "Number Of Screws Per Cam", 2f, 1f, 15f, 1f, securityGuardSpawnRate);
             securityGuardVentPrice = CustomOption.Create(284, "Number Of Screws Per Vent", 1f, 1f, 15f, 1f, securityGuardSpawnRate);
+
+            theBaitSpawnRate = CustomOption.Create(330, cs(TheBait.color, "The Bait"), rates, null, true);
+            theBaitAllVents = CustomOption.Create(331, "Mark All Vents If Anyone Is In Vent", false, theBaitSpawnRate);
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, "Number Of Meetings (excluding Mayor meeting)", 10, 0, 15, 1, null, true);
@@ -645,7 +657,7 @@ namespace TheOtherRoles {
             var hudString = sb.ToString();
 
             int defaultSettingsLines = 19;
-            int roleSettingsLines = defaultSettingsLines + 35;
+            int roleSettingsLines = defaultSettingsLines + 36;
             int detailedSettingsP1 = roleSettingsLines + 39;
             int detailedSettingsP2 = detailedSettingsP1 + 38;
             int end1 = hudString.TakeWhile(c => (defaultSettingsLines -= (c == '\n' ? 1 : 0)) > 0).Count();
