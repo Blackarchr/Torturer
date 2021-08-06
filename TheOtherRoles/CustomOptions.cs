@@ -167,6 +167,7 @@ namespace TheOtherRoles {
 
         public static CustomOption theBaitSpawnRate;
         public static CustomOption theBaitAllVents;
+        public static CustomOption theBaitReportDelay;
 
         public static CustomOption maxNumberOfMeetings;
         public static CustomOption blockSkippingInEmergencyMeetings;
@@ -326,7 +327,7 @@ namespace TheOtherRoles {
 
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "Snitch"), rates, null, true);
             snitchLeftTasksForImpostors = CustomOption.Create(211, "Task Count Where Impostors See Snitch", 1f, 0f, 5f, 1f, snitchSpawnRate);
-            includeTeamJackal = CustomOption.Create(212, "Include Jackal Team", false, snitchSpawnRate);
+            includeTeamJackal = CustomOption.Create(212, "Include Team Jackal", false, snitchSpawnRate);
             teamJackalDifferentArrowColor = CustomOption.Create(213, "Different Jackal Arrow Color", true, includeTeamJackal);
 
             spySpawnRate = CustomOption.Create(240, cs(Spy.color, "Spy"), rates, null, true);
@@ -343,6 +344,7 @@ namespace TheOtherRoles {
 
             theBaitSpawnRate = CustomOption.Create(330, cs(TheBait.color, "The Bait"), rates, null, true);
             theBaitAllVents = CustomOption.Create(331, "Mark All Vents If Anyone Is In Vent", false, theBaitSpawnRate);
+            theBaitReportDelay = CustomOption.Create(332, "Report Delay", 0f, 0f, 3f, 1f, theBaitSpawnRate);
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, "Number Of Meetings (excluding Mayor meeting)", 10, 0, 15, 1, null, true);

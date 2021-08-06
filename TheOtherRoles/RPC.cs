@@ -299,12 +299,13 @@ namespace TheOtherRoles {
             if (source != null && target != null) source.MurderPlayer(target);
         }
 
-        // Role functionality
         public static void uncheckedReportPlayer(byte sourceId, byte targetId) {
             PlayerControl source = Helpers.playerById(sourceId);
             PlayerControl target = Helpers.playerById(targetId);
             if (source != null && target != null) source.ReportDeadBody(target.Data);
         }
+
+        // Role functionality
 
         public static void engineerFixLights() {
             SwitchSystem switchSystem = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
@@ -362,7 +363,6 @@ namespace TheOtherRoles {
         }
 
         public static void medicSetShielded(byte shieldedId) {
-            Medic.usedShield = true;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == shieldedId)
                     Medic.shielded = player;
@@ -376,7 +376,7 @@ namespace TheOtherRoles {
             Medic.usedShield = true;
         }
 
-            public static void shieldedMurderAttempt() {
+        public static void shieldedMurderAttempt() {
             if (Medic.shielded != null && Medic.shielded == PlayerControl.LocalPlayer && Medic.showAttemptToShielded && HudManager.Instance?.FullScreen != null) {
                 HudManager.Instance.FullScreen.enabled = true;
                 HudManager.Instance.StartCoroutine(Effects.Lerp(0.5f, new Action<float>((p) => {
@@ -746,65 +746,65 @@ namespace TheOtherRoles {
     }
 }
 
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
-class RPCHandlerPatch {
-    static void Postfix([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader) {
-        byte packetId = callId;
-        switch (packetId) {
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
+    class RPCHandlerPatch {
+        static void Postfix([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader) {
+            byte packetId = callId;
+            switch (packetId) {
 
             // Main Controls
 
-            case (byte)CustomRPC.ResetVaribles:
-                RPCProcedure.resetVariables();
-                break;
-            case (byte)CustomRPC.ShareOptionSelection:
-                uint id = reader.ReadPackedUInt32();
-                uint selection = reader.ReadPackedUInt32();
-                RPCProcedure.shareOptionSelection(id, selection);
-                break;
-            case (byte)CustomRPC.ForceEnd:
-                RPCProcedure.forceEnd();
-                break;
-            case (byte)CustomRPC.SetRole:
-                byte roleId = reader.ReadByte();
-                byte playerId = reader.ReadByte();
-                byte flag = reader.ReadByte();
-                RPCProcedure.setRole(roleId, playerId, flag);
-                break;
-            case (byte)CustomRPC.VersionHandshake:
-                byte major = reader.ReadByte();
-                byte minor = reader.ReadByte();
-                byte patch = reader.ReadByte();
-                int versionOwnerId = reader.ReadPackedInt32();
-                byte revision = 0xFF;
-                Guid guid;
-                if (reader.Length - reader.Position >= 17) { // enough bytes left to read
-                    revision = reader.ReadByte();
-                    // GUID
-                    byte[] gbytes = reader.ReadBytes(16);
-                    guid = new Guid(gbytes);
-                }
-                else {
-                    guid = new Guid(new byte[16]);
-                }
-                RPCProcedure.versionHandshake(major, minor, patch, revision == 0xFF ? -1 : revision, guid, versionOwnerId);
-                break;
-            case (byte)CustomRPC.UseUncheckedVent:
-                int ventId = reader.ReadPackedInt32();
-                byte ventingPlayer = reader.ReadByte();
-                byte isEnter = reader.ReadByte();
-                RPCProcedure.useUncheckedVent(ventId, ventingPlayer, isEnter);
-                break;
-            case (byte)CustomRPC.UncheckedMurderPlayer:
-                byte source = reader.ReadByte();
-                byte target = reader.ReadByte();
-                RPCProcedure.uncheckedMurderPlayer(source, target);
-                break;
-            case (byte)CustomRPC.UncheckedReportPlayer:
-                byte reportSource = reader.ReadByte();
-                byte reportTarget = reader.ReadByte();
-                RPCProcedure.uncheckedReportPlayer(reportSource, reportTarget);
-                break;
+                case (byte)CustomRPC.ResetVaribles:
+                    RPCProcedure.resetVariables();
+                    break;
+                case (byte)CustomRPC.ShareOptionSelection:
+                    uint id = reader.ReadPackedUInt32();
+                    uint selection = reader.ReadPackedUInt32();
+                    RPCProcedure.shareOptionSelection(id, selection);
+                    break;
+                case (byte)CustomRPC.ForceEnd:
+                    RPCProcedure.forceEnd();
+                    break;
+                case (byte)CustomRPC.SetRole:
+                    byte roleId = reader.ReadByte();
+                    byte playerId = reader.ReadByte();
+                    byte flag = reader.ReadByte();
+                    RPCProcedure.setRole(roleId, playerId, flag);
+                    break;
+                case (byte)CustomRPC.VersionHandshake:
+                    byte major = reader.ReadByte();
+                    byte minor = reader.ReadByte();
+                    byte patch = reader.ReadByte();
+                    int versionOwnerId = reader.ReadPackedInt32();
+                    byte revision = 0xFF;
+                    Guid guid;
+                    if (reader.Length - reader.Position >= 17) { // enough bytes left to read
+                        revision = reader.ReadByte();
+                        // GUID
+                        byte[] gbytes = reader.ReadBytes(16);
+                        guid = new Guid(gbytes);
+                    }
+                    else {
+                        guid = new Guid(new byte[16]);
+                    }
+                    RPCProcedure.versionHandshake(major, minor, patch, revision == 0xFF ? -1 : revision, guid, versionOwnerId);
+                    break;
+                case (byte)CustomRPC.UseUncheckedVent:
+                    int ventId = reader.ReadPackedInt32();
+                    byte ventingPlayer = reader.ReadByte();
+                    byte isEnter = reader.ReadByte();
+                    RPCProcedure.useUncheckedVent(ventId, ventingPlayer, isEnter);
+                    break;
+                case (byte)CustomRPC.UncheckedMurderPlayer:
+                    byte source = reader.ReadByte();
+                    byte target = reader.ReadByte();
+                    RPCProcedure.uncheckedMurderPlayer(source, target);
+                    break;
+                case (byte)CustomRPC.UncheckedReportPlayer:
+                    byte reportSource = reader.ReadByte();
+                    byte reportTarget = reader.ReadByte();
+                    RPCProcedure.uncheckedReportPlayer(reportSource, reportTarget);
+                    break;
 
             // Role functionality
 

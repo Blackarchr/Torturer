@@ -120,6 +120,8 @@ namespace TheOtherRoles.Patches {
             }
             else if (Guesser.guesser != null && Guesser.guesser == PlayerControl.LocalPlayer) {
                 setPlayerNameColor(Guesser.guesser, Guesser.guesser.Data.IsImpostor ? Palette.ImpostorRed : Guesser.color);
+            } else if (TheBait.theBait != null && TheBait.theBait == PlayerControl.LocalPlayer) {
+                setPlayerNameColor(TheBait.theBait, TheBait.color);
             }
             else if (TheBait.theBait != null && TheBait.theBait == PlayerControl.LocalPlayer) {
                 setPlayerNameColor(TheBait.theBait, TheBait.color);

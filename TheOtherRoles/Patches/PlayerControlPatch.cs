@@ -448,9 +448,11 @@ namespace TheOtherRoles.Patches {
                 int arrowIndex = 0;
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (p.Data.IsImpostor && !p.Data.IsDead)
-                    {
-                        if (arrowIndex >= Snitch.localArrows.Count) Snitch.localArrows.Add(new Arrow(Color.blue));
+                    if (!p.Data.IsDead && (p.Data.IsImpostor || Snitch.includeTeamJackal && (p == Jackal.jackal || p == Sidekick.sidekick))) {
+                        if (arrowIndex >= Snitch.localArrows.Count) {
+                            if (p.Data.IsImpostor || (!Snitch.teamJackalDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick))) Snitch.localArrows.Add(new Arrow(Palette.ImpostorRed));
+                            else if (Snitch.teamJackalDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick)) Snitch.localArrows.Add(new Arrow(Jackal.color));
+                        }
                         if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null)
                         {
                             Snitch.localArrows[arrowIndex].arrow.SetActive(true);
@@ -521,15 +523,17 @@ namespace TheOtherRoles.Patches {
 
             if (TheBait.theBait.Data.IsDead && !TheBait.reported) {
                 DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == TheBait.theBait.PlayerId)?.FirstOrDefault();
-                if (deadPlayer.killerIfExisting != null) {
+                TheBait.reportDelay -= Time.fixedDeltaTime;
+                if (deadPlayer.killerIfExisting != null && TheBait.reportDelay <= 0f) {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedReportPlayer, Hazel.SendOption.Reliable, -1);
                     writer.Write(deadPlayer.killerIfExisting.PlayerId);
                     writer.Write(TheBait.theBait.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.uncheckedReportPlayer(deadPlayer.killerIfExisting.PlayerId, TheBait.theBait.PlayerId);
 
+                    TheBait.reported = true;
                 }
-                TheBait.reported = true;
+
             }
 
             if (PlayerControl.LocalPlayer == TheBait.theBait && ShipStatus.Instance?.AllVents != null) {

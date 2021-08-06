@@ -613,6 +613,7 @@ namespace TheOtherRoles {
         public static int taskCountForImpostors = 1;
         public static bool includeTeamJackal = false;
         public static bool teamJackalDifferentArrowColor = true;
+
         public static void clearAndReload() {
             if (localArrows != null) {
                 foreach (Arrow arrow in localArrows)
@@ -1006,12 +1007,13 @@ namespace TheOtherRoles {
         public static List<Vent> usedVents = new List<Vent>();
         public static bool reported = false;
         public static bool showAllVents = false;
-
+        public static float reportDelay = 0f;
         public static void clearAndReload() {
             theBait = null;
             usedVents = new List<Vent>();
             reported = false;
             showAllVents = CustomOptionHolder.theBaitAllVents.getBool();
+            reportDelay = CustomOptionHolder.theBaitReportDelay.getFloat();
         }
     }
 

@@ -57,7 +57,7 @@ namespace TheOtherRoles {
         public static RoleInfo arsonist = new RoleInfo("Arsonist", Arsonist.color, "Let them burn", "Let them burn", RoleId.Arsonist);
         public static RoleInfo goodGuesser = new RoleInfo("Nice Guesser", Guesser.color, "Guess and shoot", "Guess and shoot", RoleId.Guesser);
         public static RoleInfo badGuesser = new RoleInfo("Evil Guesser", Palette.ImpostorRed, "Guess and shoot", "Guess and shoot", RoleId.Guesser);
-        public static RoleInfo theBait = new RoleInfo("The Bait", TheBait.color, "Bait the <color=#FF1919FF>Imposters</color>", "Bait The Imposters", RoleId.TheBait);
+        public static RoleInfo theBait = new RoleInfo("The Bait", TheBait.color, "Bait the <color=#FF1919FF>Impostors</color>", "Bait the Impostors", RoleId.TheBait);
         public static RoleInfo impostor = new RoleInfo("Impostor", Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, "Sabotage and kill everyone"), "Sabotage and kill everyone", RoleId.Impostor);
         public static RoleInfo crewmate = new RoleInfo("Crewmate", Color.white, "Find the Impostors", "Find the Impostors", RoleId.Crewmate);
         public static RoleInfo lover = new RoleInfo("Lover", Lovers.color, $"You are in love", $"You are in love", RoleId.Lover);
@@ -160,6 +160,7 @@ namespace TheOtherRoles {
 
         public static String GetRole(PlayerControl p) {
             roleName = String.Join("", getRoleInfoForPlayer(p).Select(x => x.name).ToArray());
+            if (roleName.Contains("Lover")) roleName.Replace("Lover", "");
             return roleName;
         }
 
