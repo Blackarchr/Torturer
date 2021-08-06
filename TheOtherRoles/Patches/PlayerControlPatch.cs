@@ -448,9 +448,11 @@ namespace TheOtherRoles.Patches {
                 int arrowIndex = 0;
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (p.Data.IsImpostor && !p.Data.IsDead)
-                    {
-                        if (arrowIndex >= Snitch.localArrows.Count) Snitch.localArrows.Add(new Arrow(Color.blue));
+                    if (!p.Data.IsDead && (p.Data.IsImpostor || Snitch.includeTeamJackal && (p == Jackal.jackal || p == Sidekick.sidekick))) {
+                        if (arrowIndex >= Snitch.localArrows.Count) {
+                            if (p.Data.IsImpostor || (!Snitch.teamJackalDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick))) Snitch.localArrows.Add(new Arrow(Palette.ImpostorRed));
+                            else if (Snitch.teamJackalDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick)) Snitch.localArrows.Add(new Arrow(Jackal.color));
+                        }
                         if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null)
                         {
                             Snitch.localArrows[arrowIndex].arrow.SetActive(true);

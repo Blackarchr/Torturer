@@ -28,6 +28,7 @@ Even more roles are coming soon :)
 |  | [Swapper](#swapper) |  |
 |  | [Time Master](#time-master) |  |
 |  |  [Tracker](#tracker) |  |
+|  |  [The Bait](#the-bait) |  |
 
 The [Role Assignment](#role-assignment) sections explains how the roles are being distributed among the players.
 
@@ -813,7 +814,8 @@ The Medic's other feature shows when they report a corpse: they will see how lon
 |----------|:-------------:|:-------------:|
 | Medic Spawn Chance | - | -
 | Show Shielded Player | Sets who sees if a player has a shield | "Everyone", "Shielded + Medic", "Medic"
-| Shielded Player Sees Murder Attempt| Whether a shielded player sees if someone tries to kill him | True/false |
+| Shielded Player Sees Murder Attempt| Whether a shielded player sees if someone tries to kill him | True/false 
+| Shield Will Be Set After Next Meeting | - | True/false |
 -----------------------
 
 ## Mayor
@@ -933,6 +935,8 @@ When the Snitch has one task left (configurable) the Snitch will be revealed to 
 |----------|:-------------:|
 | Snitch Spawn Chance | -
 | Task Count Where Impostors See Snitch | -
+| Include Team Jackal | arrows will also appear for Jackal & Sidekick
+| Different Jackal Arrow Color | set Jackal arrow color to blue and Impostor arrow color to red
 -----------------------
 
 ## Jackal
@@ -1040,6 +1044,17 @@ The vents will be sealed after the next meeting, players can't enter or exit sea
 | Security Guard Number Of Screws | The number of screws that a Security Guard can use in a game
 | Number Of Screws Per Cam | The number of screws it takes to place a camera
 | Number Of Screws Per Vent | The number of screws it takes to seal a vent
+-----------------------
+
+## The Bait
+### **Team: Crewmates**
+The Bait is a Crewmate that if killed however, forces the killer to instantly self report him. Also the exact vent with someone inside will be marked 
+
+### Game Options
+| Name | Description
+|----------|:-------------:|
+| The Bait Spawn Chance |
+| The Bait Show All Vents | If anyone is in a vent all vents will be marked yellow (vents with someone inside will be marked as usual)
 -----------------------
 
 

@@ -613,6 +613,7 @@ namespace TheOtherRoles {
         public static int taskCountForImpostors = 1;
         public static bool includeTeamJackal = false;
         public static bool teamJackalDifferentArrowColor = true;
+
         public static void clearAndReload() {
             if (localArrows != null) {
                 foreach (Arrow arrow in localArrows)

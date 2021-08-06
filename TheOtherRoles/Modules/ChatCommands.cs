@@ -57,6 +57,7 @@ namespace TheOtherRoles.Modules {
                         __instance.AddChat(PlayerControl.LocalPlayer, "Changed color succesfully");;
                     } 
                 }
+
                 if (text.ToLower().StartsWith("/tp ") && PlayerControl.LocalPlayer.Data.IsDead) {
                     string playerName = text.Substring(4).ToLower();
                     PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.ToLower().Equals(playerName));

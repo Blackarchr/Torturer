@@ -326,7 +326,7 @@ namespace TheOtherRoles {
 
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "Snitch"), rates, null, true);
             snitchLeftTasksForImpostors = CustomOption.Create(211, "Task Count Where Impostors See Snitch", 1f, 0f, 5f, 1f, snitchSpawnRate);
-            includeTeamJackal = CustomOption.Create(212, "Include Jackal Team", false, snitchSpawnRate);
+            includeTeamJackal = CustomOption.Create(212, "Include Team Jackal", false, snitchSpawnRate);
             teamJackalDifferentArrowColor = CustomOption.Create(213, "Different Jackal Arrow Color", true, includeTeamJackal);
 
             spySpawnRate = CustomOption.Create(240, cs(Spy.color, "Spy"), rates, null, true);
