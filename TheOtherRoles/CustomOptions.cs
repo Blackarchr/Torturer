@@ -135,11 +135,12 @@ namespace TheOtherRoles {
 
         public static CustomOption trackerSpawnRate;
         public static CustomOption trackerUpdateIntervall;
+        public static CustomOption trackerResetTargetAfterMeeting;
 
         public static CustomOption snitchSpawnRate;
-        public static CustomOption snitchLeftTasksForImpostors;
-        public static CustomOption includeTeamJackal;
-        public static CustomOption teamJackalDifferentArrowColor;
+        public static CustomOption snitchLeftTasksForReveal;
+        public static CustomOption snitchIncludeTeamJackal;
+        public static CustomOption snitchTeamJackalUseDifferentArrowColor;
 
         public static CustomOption spySpawnRate;
         public static CustomOption spyCanDieToSheriff;
@@ -165,9 +166,9 @@ namespace TheOtherRoles {
         public static CustomOption securityGuardCamPrice;
         public static CustomOption securityGuardVentPrice;
 
-        public static CustomOption theBaitSpawnRate;
-        public static CustomOption theBaitAllVents;
-        public static CustomOption theBaitReportDelay;
+        public static CustomOption baitSpawnRate;
+        public static CustomOption baitHighlightAllVents;
+        public static CustomOption baitReportDelay;
 
         public static CustomOption maxNumberOfMeetings;
         public static CustomOption blockSkippingInEmergencyMeetings;
@@ -306,7 +307,7 @@ namespace TheOtherRoles {
             medicSpawnRate = CustomOption.Create(140, cs(Medic.color, "Medic"), rates, null, true);
             medicShowShielded = CustomOption.Create(143, "Show Shielded Player", new string[] { "Everyone", "Shielded + Medic", "Medic" }, medicSpawnRate);
             medicShowAttemptToShielded = CustomOption.Create(144, "Shielded Player Sees Murder Attempt", false, medicSpawnRate);
-            medicSetShieldAfterMeeting = CustomOption.Create(145, "Shield Will Be Set After Next Meeting", false, medicSpawnRate);
+            medicSetShieldAfterMeeting = CustomOption.Create(145, "Shield Will Be Set After The Next Meeting", false, medicSpawnRate);
 
             swapperSpawnRate = CustomOption.Create(150, cs(Swapper.color, "Swapper"), rates, null, true);
             swapperCanCallEmergency = CustomOption.Create(151, "Swapper can call emergency meeting", false, swapperSpawnRate);
@@ -324,11 +325,11 @@ namespace TheOtherRoles {
 
             trackerSpawnRate = CustomOption.Create(200, cs(Tracker.color, "Tracker"), rates, null, true);
             trackerUpdateIntervall = CustomOption.Create(201, "Tracker Update Intervall", 5f, 2.5f, 30f, 2.5f, trackerSpawnRate);
-
+            trackerResetTargetAfterMeeting = CustomOption.Create(202, "Tracker Reset Target After Meeting", false, trackerSpawnRate);
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "Snitch"), rates, null, true);
-            snitchLeftTasksForImpostors = CustomOption.Create(211, "Task Count Where Impostors See Snitch", 1f, 0f, 5f, 1f, snitchSpawnRate);
-            includeTeamJackal = CustomOption.Create(212, "Include Team Jackal", false, snitchSpawnRate);
-            teamJackalDifferentArrowColor = CustomOption.Create(213, "Different Jackal Arrow Color", true, includeTeamJackal);
+            snitchLeftTasksForReveal = CustomOption.Create(211, "Task Count Where The Snitch Will Be Revealed", 1f, 0f, 5f, 1f, snitchSpawnRate);
+            snitchIncludeTeamJackal = CustomOption.Create(212, "Include Team Jackal", false, snitchSpawnRate);
+            snitchTeamJackalUseDifferentArrowColor = CustomOption.Create(213, "Use Different Arrow Color For Team Jackal", true, snitchIncludeTeamJackal);
 
             spySpawnRate = CustomOption.Create(240, cs(Spy.color, "Spy"), rates, null, true);
             spyCanDieToSheriff = CustomOption.Create(241, "Spy Can Die To Sheriff", false, spySpawnRate);
@@ -342,9 +343,9 @@ namespace TheOtherRoles {
             securityGuardCamPrice = CustomOption.Create(283, "Number Of Screws Per Cam", 2f, 1f, 15f, 1f, securityGuardSpawnRate);
             securityGuardVentPrice = CustomOption.Create(284, "Number Of Screws Per Vent", 1f, 1f, 15f, 1f, securityGuardSpawnRate);
 
-            theBaitSpawnRate = CustomOption.Create(330, cs(TheBait.color, "The Bait"), rates, null, true);
-            theBaitAllVents = CustomOption.Create(331, "Mark All Vents If Anyone Is In Vent", false, theBaitSpawnRate);
-            theBaitReportDelay = CustomOption.Create(332, "Report Delay", 0f, 0f, 3f, 1f, theBaitSpawnRate);
+            baitSpawnRate = CustomOption.Create(330, cs(Bait.color, "Bait"), rates, null, true);
+            baitHighlightAllVents = CustomOption.Create(331, "Highlight All Vents If A Vent Is Occupied", false, baitSpawnRate);
+            baitReportDelay = CustomOption.Create(332, "Bait Report Delay", 0f, 0f, 10f, 1f, baitSpawnRate);
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, "Number Of Meetings (excluding Mayor meeting)", 10, 0, 15, 1, null, true);
@@ -679,10 +680,10 @@ namespace TheOtherRoles {
                 gap = 5;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index, "\n");
-                gap = 18;
+                gap = 19;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 22;
+                gap = 23;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             }

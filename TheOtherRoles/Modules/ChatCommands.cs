@@ -66,6 +66,7 @@ namespace TheOtherRoles.Modules {
                         handled = true;
                     }
                 }
+
                 if (handled) {
                     __instance.TextArea.Clear();
                     __instance.quickChatMenu.ResetGlyphs();

@@ -51,7 +51,7 @@ namespace TheOtherRoles {
             Arsonist.clearAndReload();
             Guesser.clearAndReload();
             BountyHunter.clearAndReload();
-            TheBait.clearAndReload();
+            Bait.clearAndReload();
             Torturer.clearAndReload();
         }
 
@@ -240,6 +240,7 @@ namespace TheOtherRoles {
         public static PlayerControl medic;
         public static PlayerControl shielded;
         public static PlayerControl futureShielded;
+        
         public static Color color = new Color32(126, 251, 194, byte.MaxValue);
         public static bool usedShield;
 
@@ -260,8 +261,8 @@ namespace TheOtherRoles {
         public static void clearAndReload() {
             medic = null;
             shielded = null;
-            currentTarget = null;
             futureShielded = null;
+            currentTarget = null;
             usedShield = false;
             showShielded = CustomOptionHolder.medicShowShielded.getSelection();
             showAttemptToShielded = CustomOptionHolder.medicShowAttemptToShielded.getBool();
@@ -394,7 +395,7 @@ namespace TheOtherRoles {
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
-
+    
         public static float cooldown = 30f;
         public static float duration = 10f;
 
@@ -442,7 +443,7 @@ namespace TheOtherRoles {
     public static class Camouflager {
         public static PlayerControl camouflager;
         public static Color color = Palette.ImpostorRed;
-
+    
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
@@ -507,7 +508,7 @@ namespace TheOtherRoles {
         public static PlayerControl mini;
         public static Color color = Color.white;
         public const float defaultColliderRadius = 0.2233912f;
-        public const float defaultColliderOffset = 0.3636057f;
+            public const float defaultColliderOffset = 0.3636057f;
 
         public static float growingUpDuration = 400f;
         public static DateTime timeOfGrowthStart = DateTime.UtcNow;
@@ -524,7 +525,7 @@ namespace TheOtherRoles {
             if (timeOfGrowthStart == null) return 0f;
 
             float timeSinceStart = (float)(DateTime.UtcNow - timeOfGrowthStart).TotalMilliseconds;
-            return Mathf.Clamp(timeSinceStart / (growingUpDuration * 1000), 0f, 1f);
+            return Mathf.Clamp(timeSinceStart/(growingUpDuration*1000), 0f, 1f);
         }
 
         public static bool isGrownUp() {
@@ -537,6 +538,7 @@ namespace TheOtherRoles {
         public static Color color = new Color32(100, 58, 220, byte.MaxValue);
 
         public static float updateIntervall = 5f;
+        public static bool resetTargetAfterMeeting = false;
 
         public static PlayerControl currentTarget;
         public static PlayerControl tracked;
@@ -551,16 +553,20 @@ namespace TheOtherRoles {
             return buttonSprite;
         }
 
-        public static void clearAndReload() {
-            tracker = null;
-            currentTarget = null;
-            tracked = null;
+        public static void resetTracked() {
+            currentTarget = tracked = null;
             usedTracker = false;
-            timeUntilUpdate = 0f;
-            updateIntervall = CustomOptionHolder.trackerUpdateIntervall.getFloat();
             if (arrow?.arrow != null) UnityEngine.Object.Destroy(arrow.arrow);
             arrow = new Arrow(Color.blue);
             if (arrow.arrow != null) arrow.arrow.SetActive(false);
+        }
+
+        public static void clearAndReload() {
+            tracker = null;
+            resetTracked();
+            timeUntilUpdate = 0f;
+            updateIntervall = CustomOptionHolder.trackerUpdateIntervall.getFloat();
+            resetTargetAfterMeeting = CustomOptionHolder.trackerResetTargetAfterMeeting.getBool();
         }
     }
 
@@ -575,7 +581,7 @@ namespace TheOtherRoles {
         public static bool garlicsActive = true;
 
         public static PlayerControl currentTarget;
-        public static PlayerControl bitten;
+        public static PlayerControl bitten; 
         public static bool targetNearGarlic = false;
 
         private static Sprite buttonSprite;
@@ -610,20 +616,21 @@ namespace TheOtherRoles {
         public static Color color = new Color32(184, 251, 79, byte.MaxValue);
 
         public static List<Arrow> localArrows = new List<Arrow>();
-        public static int taskCountForImpostors = 1;
+        public static int taskCountForReveal = 1;
         public static bool includeTeamJackal = false;
-        public static bool teamJackalDifferentArrowColor = true;
+        public static bool teamJackalUseDifferentArrowColor = true;
+
 
         public static void clearAndReload() {
             if (localArrows != null) {
                 foreach (Arrow arrow in localArrows)
                     if (arrow?.arrow != null)
-                        UnityEngine.Object.Destroy(arrow.arrow);
+                    UnityEngine.Object.Destroy(arrow.arrow);
             }
             localArrows = new List<Arrow>();
-            taskCountForImpostors = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForImpostors.getFloat());
-            includeTeamJackal = CustomOptionHolder.includeTeamJackal.getBool();
-            teamJackalDifferentArrowColor = CustomOptionHolder.teamJackalDifferentArrowColor.getBool();
+            taskCountForReveal = Mathf.RoundToInt(CustomOptionHolder.snitchLeftTasksForReveal.getFloat());
+            includeTeamJackal = CustomOptionHolder.snitchIncludeTeamJackal.getBool();
+            teamJackalUseDifferentArrowColor = CustomOptionHolder.snitchTeamJackalUseDifferentArrowColor.getBool();
             snitch = null;
         }
     }
@@ -634,7 +641,7 @@ namespace TheOtherRoles {
         public static PlayerControl fakeSidekick;
         public static PlayerControl currentTarget;
         public static List<PlayerControl> formerJackals = new List<PlayerControl>();
-
+        
         public static float cooldown = 30f;
         public static float createSidekickCooldown = 30f;
         public static bool canUseVents = true;
@@ -672,7 +679,7 @@ namespace TheOtherRoles {
             formerJackals.Clear();
             hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
         }
-
+        
     }
 
     public static class Sidekick {
@@ -705,7 +712,7 @@ namespace TheOtherRoles {
         public static List<PlayerControl> futureErased = new List<PlayerControl>();
         public static PlayerControl currentTarget;
         public static float cooldown = 30f;
-        public static bool canEraseAnyone = false;
+        public static bool canEraseAnyone = false; 
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -722,7 +729,7 @@ namespace TheOtherRoles {
             canEraseAnyone = CustomOptionHolder.eraserCanEraseAnyone.getBool();
         }
     }
-
+    
     public static class Spy {
         public static PlayerControl spy;
         public static Color color = Palette.ImpostorRed;
@@ -932,7 +939,7 @@ namespace TheOtherRoles {
         public static void clearAndReload() {
             arsonist = null;
             currentTarget = null;
-            douseTarget = null;
+            douseTarget = null; 
             triggerArsonistWin = false;
             dousedPlayers = new List<PlayerControl>();
             foreach (PoolablePlayer p in MapOptions.playerIcons.Values) {
@@ -958,7 +965,7 @@ namespace TheOtherRoles {
 
         public static void clearAndReload() {
             guesser = null;
-
+            
             remainingShots = Mathf.RoundToInt(CustomOptionHolder.guesserNumberOfShots.getFloat());
         }
     }
@@ -1001,19 +1008,21 @@ namespace TheOtherRoles {
             arrowUpdateIntervall = CustomOptionHolder.bountyHunterArrowUpdateIntervall.getFloat();
         }
     }
-    public static class TheBait {
-        public static PlayerControl theBait;
+
+    public static class Bait {
+        public static PlayerControl bait;
         public static Color color = new Color32(0, 247, 255, byte.MaxValue);
-        public static List<Vent> usedVents = new List<Vent>();
-        public static bool reported = false;
-        public static bool showAllVents = false;
+
+        public static bool highlightAllVents = false;
         public static float reportDelay = 0f;
+
+        public static bool reported = false;
+
         public static void clearAndReload() {
-            theBait = null;
-            usedVents = new List<Vent>();
+            bait = null;
             reported = false;
-            showAllVents = CustomOptionHolder.theBaitAllVents.getBool();
-            reportDelay = CustomOptionHolder.theBaitReportDelay.getFloat();
+            highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
+            reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
         }
     }
 

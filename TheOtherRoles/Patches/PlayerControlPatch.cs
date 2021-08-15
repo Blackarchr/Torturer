@@ -435,7 +435,7 @@ namespace TheOtherRoles.Patches {
             var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
             int numberOfTasks = playerTotal - playerCompleted;
 
-            if (numberOfTasks <= Snitch.taskCountForImpostors && (PlayerControl.LocalPlayer.Data.IsImpostor || Snitch.includeTeamJackal && (PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Sidekick.sidekick))) {
+            if (numberOfTasks <= Snitch.taskCountForReveal && (PlayerControl.LocalPlayer.Data.IsImpostor || (Snitch.includeTeamJackal && (PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Sidekick.sidekick)))) {
                 if (Snitch.localArrows.Count == 0) Snitch.localArrows.Add(new Arrow(Color.blue));
                 if (Snitch.localArrows.Count != 0 && Snitch.localArrows[0] != null)
                 {
@@ -448,13 +448,12 @@ namespace TheOtherRoles.Patches {
                 int arrowIndex = 0;
                 foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                 {
-                    if (!p.Data.IsDead && (p.Data.IsImpostor || Snitch.includeTeamJackal && (p == Jackal.jackal || p == Sidekick.sidekick))) {
+                    if (!p.Data.IsDead && (p.Data.IsImpostor || (Snitch.includeTeamJackal && (p == Jackal.jackal || p == Sidekick.sidekick)))) {
                         if (arrowIndex >= Snitch.localArrows.Count) {
-                            if (p.Data.IsImpostor || (!Snitch.teamJackalDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick))) Snitch.localArrows.Add(new Arrow(Palette.ImpostorRed));
-                            else if (Snitch.teamJackalDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick)) Snitch.localArrows.Add(new Arrow(Jackal.color));
+                            if (Snitch.teamJackalUseDifferentArrowColor && (p == Jackal.jackal || p == Sidekick.sidekick)) Snitch.localArrows.Add(new Arrow(Jackal.color));
+                            else Snitch.localArrows.Add(new Arrow(Palette.ImpostorRed));
                         }
-                        if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null)
-                        {
+                        if (arrowIndex < Snitch.localArrows.Count && Snitch.localArrows[arrowIndex] != null) {
                             Snitch.localArrows[arrowIndex].arrow.SetActive(true);
                             Snitch.localArrows[arrowIndex].Update(p.transform.position);
                         }
@@ -518,65 +517,51 @@ namespace TheOtherRoles.Patches {
             }
         }
 
-        static void theBaitUpdate() {
-            if (TheBait.theBait == null) return;
-
-            if (TheBait.theBait.Data.IsDead && !TheBait.reported) {
-                DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == TheBait.theBait.PlayerId)?.FirstOrDefault();
-                TheBait.reportDelay -= Time.fixedDeltaTime;
-                if (deadPlayer.killerIfExisting != null && TheBait.reportDelay <= 0f) {
-                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedReportPlayer, Hazel.SendOption.Reliable, -1);
-                    writer.Write(deadPlayer.killerIfExisting.PlayerId);
-                    writer.Write(TheBait.theBait.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.uncheckedReportPlayer(deadPlayer.killerIfExisting.PlayerId, TheBait.theBait.PlayerId);
-
-                    TheBait.reported = true;
-                }
-
-            }
-
-            if (PlayerControl.LocalPlayer == TheBait.theBait && ShipStatus.Instance?.AllVents != null) {
-                TheBait.usedVents = new List<Vent>();
-                foreach (PlayerControl player in PlayerControl.AllPlayerControls) {
-                    if (!player.inVent) continue;
-                    Vent target = null;
-                    Vector2 truePosition = player.GetTruePosition();
-                    float closestDistance = float.MaxValue;
-                    for (int i = 0; i < ShipStatus.Instance.AllVents.Length; i++) {
-                        Vent vent = ShipStatus.Instance.AllVents[i];
-                        float distance = Vector2.Distance(vent.transform.position, truePosition);
-                        if (distance <= vent.UsableDistance && distance < closestDistance) {
-                            closestDistance = distance;
-                            target = vent;
-                        }
-                    }
-                    if (!TheBait.usedVents.Contains(target)) TheBait.usedVents.Add(target);
-                }
-
-                for (int i = 0; i < ShipStatus.Instance.AllVents.Length; i++) {
-                    Vent vent = ShipStatus.Instance.AllVents[i];
-                    if (!TheBait.usedVents.Contains(vent) && vent?.myRend?.material != null) {
-                        vent.myRend.material.SetFloat("_Outline", 0);
-                        if (TheBait.showAllVents && TheBait.usedVents.Count > 0) {
-                            vent.myRend.material.SetFloat("_Outline", 1f);
-                            vent.myRend.material.SetColor("_OutlineColor", Color.yellow);
-                        }
-                    }
-
-                }
-
-                foreach (Vent vent in TheBait.usedVents) {
-                    if (vent?.myRend?.material != null) {
-                        vent.myRend.material.SetFloat("_Outline", 1f);
-                        vent.myRend.material.SetColor("_OutlineColor", TheBait.color);
-                    }
-                }
-            }
-        }
         static void torturerSetTarget() {
             if (Torturer.torturer == null || Torturer.torturer != PlayerControl.LocalPlayer) return;
             if (Torturer.torturedPlayer == null) Torturer.currentTarget = setTarget();
+        }
+
+        static void baitUpdate() {
+            if (Bait.bait == null || Bait.bait != PlayerControl.LocalPlayer) return;
+
+            // Bait report
+            if (Bait.bait.Data.IsDead && !Bait.reported) {
+                Bait.reportDelay -= Time.fixedDeltaTime;
+                DeadPlayer deadPlayer = deadPlayers?.Where(x => x.player?.PlayerId == Bait.bait.PlayerId)?.FirstOrDefault();
+                if (deadPlayer.killerIfExisting != null && Bait.reportDelay <= 0f) {
+                    
+                    Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
+                    RPCProcedure.uncheckedCmdReportDeadBody(deadPlayer.killerIfExisting.PlayerId, Bait.bait.PlayerId);
+
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
+                    writer.Write(deadPlayer.killerIfExisting.PlayerId);
+                    writer.Write(Bait.bait.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Bait.reported = true;
+                }
+            }
+
+            // Bait Vents
+            if (ShipStatus.Instance?.AllVents != null) {
+                var ventsWithPlayers = new List<int>();
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls) {
+                    if (player.inVent) {
+                        Vent target = ShipStatus.Instance.AllVents.OrderBy(x => Vector2.Distance(x.transform.position, player.GetTruePosition())).FirstOrDefault();
+                        if (target != null) ventsWithPlayers.Add(target.Id);
+                    }
+                }
+
+                foreach (Vent vent in ShipStatus.Instance.AllVents) {
+                    if (vent.myRend == null || vent.myRend.material == null) continue;
+                    if (ventsWithPlayers.Contains(vent.Id) || (ventsWithPlayers.Count > 0 && Bait.highlightAllVents)) {
+                        vent.myRend.material.SetFloat("_Outline", 1f);
+                        vent.myRend.material.SetColor("_OutlineColor", Color.yellow);
+                    } else {
+                        vent.myRend.material.SetFloat("_Outline", 0);
+                    }
+                }
+            }
         }
 
         public static void Postfix(PlayerControl __instance) {
@@ -636,10 +621,10 @@ namespace TheOtherRoles.Patches {
                 snitchUpdate();
                 // BountyHunter
                 bountyHunterUpdate();
-                // The Bait
-                theBaitUpdate();
                 // Torturer
                 torturerSetTarget();
+                // Bait
+                baitUpdate();
             } 
         }
     }
@@ -659,18 +644,7 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
     class PlayerControlCmdReportDeadBodyPatch {
         public static void Prefix(PlayerControl __instance) {
-            // Murder the bitten player before the meeting starts or reset the bitten player
-            if (Vampire.bitten != null && !Vampire.bitten.Data.IsDead && Helpers.handleMurderAttempt(Vampire.bitten, true)) {
-                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireTryKill, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(killWriter);
-                RPCProcedure.vampireTryKill();
-            } else {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampireSetBitten, Hazel.SendOption.Reliable, -1);
-                writer.Write(byte.MaxValue);
-                writer.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.vampireSetBitten(byte.MaxValue, byte.MaxValue);
-            }
+            Helpers.handleVampireBiteOnBodyReport();
         }
     }
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcMurderPlayer))]

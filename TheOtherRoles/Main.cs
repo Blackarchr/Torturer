@@ -19,7 +19,7 @@ namespace TheOtherRoles {
     [BepInProcess("Among Us.exe")]
     public class TheOtherRolesPlugin : BasePlugin {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "2.7.3.5";
+        public const string VersionString = "2.8.1";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public Harmony Harmony { get; } = new Harmony(Id);
