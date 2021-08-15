@@ -517,6 +517,11 @@ namespace TheOtherRoles.Patches {
             }
         }
 
+        static void torturerSetTarget() {
+            if (Torturer.torturer == null || Torturer.torturer != PlayerControl.LocalPlayer) return;
+            if (Torturer.torturedPlayer == null) Torturer.currentTarget = setTarget();
+        }
+
         static void baitUpdate() {
             if (Bait.bait == null || Bait.bait != PlayerControl.LocalPlayer) return;
 
