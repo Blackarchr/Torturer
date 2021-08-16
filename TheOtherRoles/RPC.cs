@@ -737,7 +737,8 @@ namespace TheOtherRoles {
         public static void torture(byte targetId) {
             if (Helpers.playerById(targetId) == PlayerControl.LocalPlayer) {
                 PlayerControl.LocalPlayer.moveable = false;
-                HudManager.Instance.FullScreen.color = new Color(0.25f, 0.24f, 0.23f, 1f);
+                PlayerControl.LocalPlayer.NetTransform.Halt();
+                HudManager.Instance.FullScreen.color = new Color(0.2f, 0.2f, 0.2f, 1f);
                 HudManager.Instance.FullScreen.enabled = true;
                 HudManager.Instance.StartCoroutine(Effects.Lerp(Torturer.duration, new Action<float>((p) => {
                     if (p == 1f || MeetingHud.Instance != null) {

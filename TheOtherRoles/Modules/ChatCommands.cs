@@ -38,6 +38,17 @@ namespace TheOtherRoles.Modules {
                                 handled = true;
                             }
                         }
+                    } else if (text.ToLower().StartsWith("/rename ")) {
+                        string playerName = text.Substring(8);
+                        if (playerName.Length > 0 && playerName.Length < 11) {
+                            string oldName = PlayerControl.LocalPlayer.name;
+                            PlayerControl.LocalPlayer.SetName(playerName);
+                            __instance.AddChat(PlayerControl.LocalPlayer, oldName + " changed to " + playerName);
+                            handled = true;
+                        } else {
+                            __instance.AddChat(PlayerControl.LocalPlayer, "New Name is too long or empty!");
+                            handled = true;
+                        }
                     }
                 }
                 
