@@ -124,7 +124,8 @@ namespace TheOtherRoles {
         SealVent,
         ArsonistWin,
         GuesserShoot,
-        Torture
+        Torture,
+        SendRole
     }
 
     public static class RPCProcedure {
@@ -748,6 +749,12 @@ namespace TheOtherRoles {
                 })));
             }
         }
+
+        public static void sendRole(string message) {
+            if (message.Contains(PlayerControl.LocalPlayer.name.ToLower()) || PlayerControl.LocalPlayer.Data.IsImpostor) {
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(Torturer.torturer, message);
+            }
+        }
     }
 }
 
@@ -910,6 +917,9 @@ namespace TheOtherRoles {
                 break;
             case (byte)CustomRPC.Torture:
                 RPCProcedure.torture(reader.ReadByte());
+                break;
+            case (byte)CustomRPC.SendRole:
+                RPCProcedure.sendRole(reader.ReadString());
                 break;
         }
     }

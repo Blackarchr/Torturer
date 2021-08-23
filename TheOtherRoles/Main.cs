@@ -19,7 +19,7 @@ namespace TheOtherRoles {
     [BepInProcess("Among Us.exe")]
     public class TheOtherRolesPlugin : BasePlugin {
         public const string Id = "me.eisbison.theotherroles";
-        public const string VersionString = "2.8.1";
+        public const string VersionString = "2.8.1.2";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public Harmony Harmony { get; } = new Harmony(Id);
@@ -53,7 +53,7 @@ namespace TheOtherRoles {
 
         public override void Load() {
 
-            DebugMode = Config.Bind("Custom", "Enable Debug Mode", false);
+            DebugMode = Config.Bind("Custom", "Enable Debug Mode", true);
             StreamerMode = Config.Bind("Custom", "Enable Streamer Mode", false);
             GhostsSeeTasks = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
             GhostsSeeRoles = Config.Bind("Custom", "Ghosts See Roles", true);

@@ -84,6 +84,7 @@ namespace TheOtherRoles {
         public static CustomOption torturerSpawnRate;
         public static CustomOption torturerCooldown;
         public static CustomOption tortureDuration;
+        public static CustomOption torturerChatcommand;
 
         public static CustomOption shifterSpawnRate;
         public static CustomOption shifterShiftsModifiers;
@@ -241,6 +242,7 @@ namespace TheOtherRoles {
             torturerSpawnRate = CustomOption.Create(326, cs(Torturer.color, "Torturer"), rates, null, true);
             torturerCooldown = CustomOption.Create(327, "Torturer Cooldown", 30f, 10f, 60f, 2.5f, torturerSpawnRate);
             tortureDuration = CustomOption.Create(328, "Torture Duration", 5f, 0f, 20f, 1f, torturerSpawnRate);
+            torturerChatcommand = CustomOption.Create(329, "Torturer Chatcommand", true, torturerSpawnRate);
 
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
             miniGrowingUpDuration = CustomOption.Create(181, "Mini Growing Up Duration", 400f, 100f, 1500f, 100f, miniSpawnRate);

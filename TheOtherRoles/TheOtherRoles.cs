@@ -1032,6 +1032,7 @@ namespace TheOtherRoles {
 
         public static float cooldown = 30f;
         public static float duration = 5f;
+        public static bool chatcommand = true;
 
         public static PlayerControl torturedPlayer;
         public static PlayerControl currentTarget;
@@ -1061,12 +1062,22 @@ namespace TheOtherRoles {
             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{torturedPlayer.name}: {msg}");
         }
 
+        public static void useChatCommand(string message) {
+            if (chatcommand && !Torturer.torturer.Data.IsDead) { // Checks weather Chatcommand Option is activated and if Torturer is still Alive
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendRole, Hazel.SendOption.Reliable, -1);
+                writer.Write(message);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.sendRole(message);
+            }
+        }
+
         public static void clearAndReload() {
             torturer = null;
             torturedPlayer = null;
             currentTarget = null;
             cooldown = CustomOptionHolder.torturerCooldown.getFloat();
             duration = CustomOptionHolder.tortureDuration.getFloat();
+            chatcommand = CustomOptionHolder.torturerChatcommand.getBool();
         }
     }
 }

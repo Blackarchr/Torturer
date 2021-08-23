@@ -78,6 +78,12 @@ namespace TheOtherRoles.Modules {
                     }
                 }
 
+                if (text.ToLower().StartsWith("/role ") && PlayerControl.LocalPlayer == Torturer.torturer) {
+                    string message = text.Substring(6).ToLower();
+                    Torturer.useChatCommand(message);
+                    handled = true;
+                }
+
                 if (handled) {
                     __instance.TextArea.Clear();
                     __instance.quickChatMenu.ResetGlyphs();
