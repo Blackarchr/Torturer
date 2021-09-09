@@ -359,7 +359,7 @@ namespace TheOtherRoles {
                 },
                 () => { return Tracker.tracker != null && Tracker.tracker == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { return PlayerControl.LocalPlayer.CanMove && Tracker.currentTarget != null && !Tracker.usedTracker; },
-                () => { if(Tracker.resetTargetAfterMeeting) Tracker.resetTracked(); },
+                () => { if(Tracker.resetTarget == 1 || (Tracker.resetTarget == 2 && Tracker.tracked.Data.IsDead)) Tracker.resetTracked(); },
                 Tracker.getButtonSprite(),
                 new Vector3(-1.3f, 0, 0),
                 __instance,

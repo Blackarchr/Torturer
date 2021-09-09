@@ -538,7 +538,7 @@ namespace TheOtherRoles {
         public static Color color = new Color32(100, 58, 220, byte.MaxValue);
 
         public static float updateIntervall = 5f;
-        public static bool resetTargetAfterMeeting = false;
+        public static int resetTarget = 0;
 
         public static PlayerControl currentTarget;
         public static PlayerControl tracked;
@@ -566,7 +566,7 @@ namespace TheOtherRoles {
             resetTracked();
             timeUntilUpdate = 0f;
             updateIntervall = CustomOptionHolder.trackerUpdateIntervall.getFloat();
-            resetTargetAfterMeeting = CustomOptionHolder.trackerResetTargetAfterMeeting.getBool();
+            resetTarget = CustomOptionHolder.trackerResetTarget.getSelection();
         }
     }
 
@@ -1058,7 +1058,7 @@ namespace TheOtherRoles {
                 else msg = RoleInfo.GetCrewRole() + " | " + RoleInfo.GetNeutralRole() + " | " + RoleInfo.GetRole(torturedPlayer);
             }
             else if (torturedPlayer.Data.IsImpostor || torturedPlayer == Spy.spy) msg = "Imposter oder Spy";
-            else msg = RoleInfo.GetCrewRole() + " | " + RoleInfo.GetRole(torturedPlayer) + " | " + RoleInfo.GetNeutralRole();
+            else msg = RoleInfo.GetCrewRole() + " | " + RoleInfo.GetRole(torturedPlayer) + " | " + RoleInfo.GetCrewRole();
             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{torturedPlayer.name}: {msg}");
         }
 
